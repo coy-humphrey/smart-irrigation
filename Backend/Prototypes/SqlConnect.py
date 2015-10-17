@@ -26,6 +26,7 @@ sql_config = {
   'database': config.get('MySQL', 'database'),
   'raise_on_warnings': True,
 }
+table = config.get ('MySQL', 'table')
 
 # Print settings for debugging purposes
 print sql_config
@@ -44,4 +45,28 @@ except mysql.connector.Error as err:
 # This would be where we put code that actually does something with the
 # database we've opened
 else:
+  # Download warnings and errors after executing commands
+  cnx.get_warnings = True
+  cursor = cnx.cursor()
+  # Use some Python string manipulation to set up command
+  # This will add the entries from the below dictionary into a row
+  add_entry = ("INSERT INTO " + table + " "
+                "(time, s1, s2, s3, temp) "
+                "VALUES (%(time)s, %(s_one)s, %(s_two)s, %(s_three)s, %(temp)s)")
+  # Dictionary holding the values to add.
+  # For now they are hard coded, but when we start actually pulling information
+  # from a serial connection, we will store that information here
+  data_entry = {
+    'time': '2015-10-06 06:27:23',
+    's_one'  : '16',
+    's_two'  : '33',
+    's_three'  : '9',
+    'temp': '67',
+  }
+  # Execute the command, fetch and print any warnings, then commit changes
+  cursor.execute(add_entry, data_entry)
+  print cursor.fetchwarnings()
+  cnx.commit()
+  # Cleanup
+  cursor.close()
   cnx.close()
