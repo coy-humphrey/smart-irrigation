@@ -13,6 +13,9 @@ Future goals:
 
 import ConfigParser
 import mysql.connector
+from time import time
+from datetime import datetime
+
 
 # Initialize our ConfigParser to read the config file
 config = ConfigParser.RawConfigParser()
@@ -57,7 +60,8 @@ else:
   # For now they are hard coded, but when we start actually pulling information
   # from a serial connection, we will store that information here
   data_entry = {
-    'time': '2015-10-06 06:27:23',
+    # Get current time in a format MySQL will understand
+    'time': datetime.fromtimestamp(time()).strftime('%Y-%m-%d %H:%M:%S'),
     's_one'  : '16',
     's_two'  : '33',
     's_three'  : '9',
