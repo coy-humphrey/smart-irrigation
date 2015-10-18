@@ -51,6 +51,6 @@ else:
 
   cursor.execute(query)
   for (time, s1, s2, s3, temp) in cursor:
-    print("Moisture readings {},{},{} and {} degrees at {}".format(s1, s2, s3, time, temp))
+    print("Moisture readings {},{},{} and {} degrees at {}".format(s1, s2, s3, temp, time))
 
   cnx.close()
