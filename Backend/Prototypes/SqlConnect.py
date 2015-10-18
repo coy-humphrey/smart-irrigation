@@ -44,9 +44,7 @@ except mysql.connector.Error as err:
     print("Database does not exist")
   else:
     print(err)
-# Disconnect from server if we successfully connected
-# This would be where we put code that actually does something with the
-# database we've opened
+# Successfully connected, now we can insert things
 else:
   # Download warnings and errors after executing commands
   cnx.get_warnings = True
@@ -55,16 +53,16 @@ else:
   # This will add the entries from the below dictionary into a row
   add_entry = ("INSERT INTO " + table + " "
                 "(time, s1, s2, s3, temp) "
-                "VALUES (%(time)s, %(s_one)s, %(s_two)s, %(s_three)s, %(temp)s)")
+                "VALUES (%(time)s, %(s1)s, %(s2)s, %(s3)s, %(temp)s)")
   # Dictionary holding the values to add.
   # For now they are hard coded, but when we start actually pulling information
   # from a serial connection, we will store that information here
   data_entry = {
     # Get current time in a format MySQL will understand
     'time': datetime.fromtimestamp(time()).strftime('%Y-%m-%d %H:%M:%S'),
-    's_one'  : '16',
-    's_two'  : '33',
-    's_three'  : '9',
+    's1'  : '16',
+    's2'  : '33',
+    's3'  : '9',
     'temp': '67',
   }
   # Execute the command, fetch and print any warnings, then commit changes
