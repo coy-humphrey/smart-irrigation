@@ -14,7 +14,7 @@ import sys
 import csv
 import random
 import time
-from datetime import date
+from datetime import datetime
 
 
 ARGS = None
@@ -43,8 +43,7 @@ def main():
                 oldtime = dict['Julian Time']
                 newtime = random.randrange(int(oldtime), int(oldtime) + 900000)
                 dict['Julian Time'] = newtime
-                dict['Year-Month-Date Time'] =
-                                        date.fromtimestamp(newtime).isoformat()
+                dict['Year-Month-Date Time'] = datetime.fromtimestamp(newtime).strftime('%Y-%m-%d %H:%M:%S')
                 dict['6\"Sensor'] = random.randrange(0, 100)
                 dict['12\"Sensor'] = random.randrange(0, 100)
                 dict['18\"Sensor'] = random.randrange(0, 100)
