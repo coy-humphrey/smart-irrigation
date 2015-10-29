@@ -34,7 +34,7 @@ def main():
     ARGS = parser.parse_args()
     # Open output csv
     try:
-        with open(ARGS.out_csv[0], 'w') as csvfile:
+        with open(ARGS.out_csv[0], 'wb') as csvfile:
             fieldnames = FIELDNAMES
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writeheader()
