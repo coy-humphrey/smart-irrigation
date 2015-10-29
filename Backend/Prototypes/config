@@ -1,0 +1,11 @@
+[MySQL]
+user = smart_irrigation
+password = 3Kv32B8JEliX0Qhk
+host = smart-irrigation.canqqif3vrwd.us-west-1.rds.amazonaws.com
+database = smart_irrigation
+table = entry
+
+[fields]
+time = TIMESTAMP
+moisture_sensor_1 = DOUBLE
+

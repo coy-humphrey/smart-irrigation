@@ -9,13 +9,13 @@ config = ConfigParser.RawConfigParser()
 # Create section containing MySQL data
 config.add_section('MySQL')
 # Username and password for MySQL server
-config.set('MySQL', 'user', 'username')
-config.set('MySQL', 'password', 'password')
+config.set('MySQL', 'user', 'smart_irrigation')
+config.set('MySQL', 'password', '3Kv32B8JEliX0Qhk')
 # Address of server
-config.set('MySQL', 'host', '127.0.0.1')
+config.set('MySQL', 'host', 'smart-irrigation.canqqif3vrwd.us-west-1.rds.amazonaws.com')
 # Name of database and table containing smart irrigation information
-config.set('MySQL', 'database', 'database_name')
-config.set('MySQL', 'table', 'table_name')
+config.set('MySQL', 'database', 'smart_irrigation')
+config.set('MySQL', 'table', 'entry')
 
 # Section containing all the fields that we will store in the database
 # Will be in format "fieldname = SQL Data Type"
