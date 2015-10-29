@@ -18,8 +18,9 @@ from datetime import datetime
 
 
 ARGS = None
-FIELDNAMES = ['Julian Time', 'Year-Month-Date Time', '6\"Sensor', '12\"Sensor'
-              ,'18\"Sensor', 'Temp']
+#FIELDNAMES = ['Julian Time', 'Year-Month-Date Time', '6\"Sensor', '12\"Sensor'
+#              ,'18\"Sensor', 'Temp']
+FIELDNAMES = ['time', 's1', 's2', 's3', 'temp']
 
 
 def main():
@@ -38,16 +39,15 @@ def main():
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writeheader()
             dict = {}
-            dict['Julian Time'] = time.time();
+            newtime = time.time()
             for row in range(0, int(ARGS.num_rows[0])):
-                oldtime = dict['Julian Time']
+                oldtime = newtime
                 newtime = random.randrange(int(oldtime), int(oldtime) + 900000)
-                dict['Julian Time'] = newtime
-                dict['Year-Month-Date Time'] = datetime.fromtimestamp(newtime).strftime('%Y-%m-%d %H:%M:%S')
-                dict['6\"Sensor'] = random.randrange(0, 100)
-                dict['12\"Sensor'] = random.randrange(0, 100)
-                dict['18\"Sensor'] = random.randrange(0, 100)
-                dict['Temp'] = random.randrange(20, 120)
+                dict['time'] = datetime.fromtimestamp(newtime).strftime('%Y-%m-%d %H:%M:%S')
+                dict['s1'] = random.randrange(0, 100)
+                dict['s2'] = random.randrange(0, 100)
+                dict['s3'] = random.randrange(0, 100)
+                dict['temp'] = random.randrange(20, 120)
                 writer.writerow(dict)
     except IOError:
         print "Error: cannot open file:" + ARGS.out_csv[0]
