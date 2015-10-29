@@ -28,7 +28,7 @@ sql_config = {
   'password': config.get('MySQL', 'password'),
   'host': config.get('MySQL', 'host'),
   'database': config.get('MySQL', 'database'),
-  'raise_on_warnings': True,
+  'raise_on_warnings': False,
 }
 table = config.get ('MySQL', 'table')
 
@@ -55,18 +55,16 @@ else:
   add_entry = ("INSERT INTO " + table + " "
                 "(" + ",".join(config.options("fields")) + ") "
                 "VALUES (" + ", ".join (map(lambda x: "%(" + x + ")s", config.options("fields"))) + ")")
-  # Dictionary holding the values to add.
-  # For now they are hard coded, but when we start actually pulling information
-  # from a serial connection, we will store that information here
   
+  # Open csv file, read each row and use the created dictionary to make SQL command
+  # This assumes that the csv file has identical fields to those listed in config file
   with open('test_input', 'rb') as csvfile:
     reader = csv.DictReader(csvfile)
     for row in reader:
       cursor.execute(add_entry, row)
       print cursor.fetchwarnings()
-    
+  # Commit changes
   cnx.commit()
-  # Execute the command, fetch and print any warnings, then commit changes
   
   # Cleanup
   cursor.close()
