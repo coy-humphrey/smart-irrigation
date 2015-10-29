@@ -13,6 +13,7 @@ Future goals:
 
 import ConfigParser
 import mysql.connector
+import csv
 from time import time
 from datetime import datetime
 
@@ -49,26 +50,24 @@ else:
   # Download warnings and errors after executing commands
   cnx.get_warnings = True
   cursor = cnx.cursor()
-  # Use some Python string manipulation to set up command
+  # Use some Python string manipulation to set up command based on fields in config file
   # This will add the entries from the below dictionary into a row
   add_entry = ("INSERT INTO " + table + " "
-                "(time, s1, s2, s3, temp) "
-                "VALUES (%(time)s, %(s1)s, %(s2)s, %(s3)s, %(temp)s)")
+                "(" + ",".join(config.options("fields")) + ") "
+                "VALUES (" + ", ".join (map(lambda x: "%(" + x + ")s", config.options("fields"))) + ")")
   # Dictionary holding the values to add.
   # For now they are hard coded, but when we start actually pulling information
   # from a serial connection, we will store that information here
-  data_entry = {
-    # Get current time in a format MySQL will understand
-    'time': datetime.fromtimestamp(time()).strftime('%Y-%m-%d %H:%M:%S'),
-    's1'  : '16',
-    's2'  : '33',
-    's3'  : '9',
-    'temp': '67',
-  }
-  # Execute the command, fetch and print any warnings, then commit changes
-  cursor.execute(add_entry, data_entry)
-  print cursor.fetchwarnings()
+  
+  with open('test_input', 'rb') as csvfile:
+    reader = csv.DictReader(csvfile)
+    for row in reader:
+      cursor.execute(add_entry, row)
+      print cursor.fetchwarnings()
+    
   cnx.commit()
+  # Execute the command, fetch and print any warnings, then commit changes
+  
   # Cleanup
   cursor.close()
   cnx.close()
