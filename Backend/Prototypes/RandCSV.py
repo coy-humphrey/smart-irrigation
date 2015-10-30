@@ -14,17 +14,22 @@ import sys
 import csv
 import random
 import time
+import ConfigParser
 from datetime import datetime
 
 
 ARGS = None
-#FIELDNAMES = ['Julian Time', 'Year-Month-Date Time', '6\"Sensor', '12\"Sensor'
-#              ,'18\"Sensor', 'Temp']
-FIELDNAMES = ['time', 's1', 's2', 's3', 'temp']
 
 
 def main():
     usage = '%(prog)s <out_csv> <num_rows>'
+    config = ConfigParser.RawConfigParser(allow_no_value=True)
+    try:
+        config.read('RandCSV.cfg')
+    except IOError:
+        print "Error: cannot open config file: RandCSV.cfg"
+        sys.exit(1)
+    fieldnames = [x[0] for x in config.items('Fieldnames')]
     parser = argparse.ArgumentParser(usage=usage)
     parser.add_argument('out_csv', nargs=1,
                         help='output CSV file')
@@ -35,7 +40,6 @@ def main():
     # Open output csv
     try:
         with open(ARGS.out_csv[0], 'wb') as csvfile:
-            fieldnames = FIELDNAMES
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writeheader()
             dict = {}
