@@ -29,7 +29,10 @@ def main():
     except IOError:
         print "Error: cannot open config file: RandCSV.cfg"
         sys.exit(1)
-    fieldnames = [x[0] for x in config.items('Fieldnames')]
+    fieldnames = []
+    for section in config.sections():
+        for setting in [x[0] for x in config.items(section)]:
+            fieldnames.append(setting)
     parser = argparse.ArgumentParser(usage=usage)
     parser.add_argument('out_csv', nargs=1,
                         help='output CSV file')
@@ -42,17 +45,19 @@ def main():
         with open(ARGS.out_csv[0], 'wb') as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writeheader()
-            dict = {}
             newtime = time.time()
-            for row in range(0, int(ARGS.num_rows[0])):
-                oldtime = newtime
-                newtime = random.randrange(int(oldtime), int(oldtime) + 900000)
-                dict['time'] = datetime.fromtimestamp(newtime).strftime('%Y-%m-%d %H:%M:%S')
-                dict['s1'] = random.randrange(0, 100)
-                dict['s2'] = random.randrange(0, 100)
-                dict['s3'] = random.randrange(0, 100)
-                dict['temp'] = random.randrange(20, 120)
-                writer.writerow(dict)
+            for rownum in range(0, int(ARGS.num_rows[0])):
+                row = {}
+                for datepair in config.items('Dates'):
+                    oldtime = newtime
+                    newtime = int(oldtime) + 900
+                    timeformat = config.get('Dates', datepair[0])
+                    row[datepair[0]] = datetime.fromtimestamp(newtime).strftime(timeformat)
+                for pair in config.items('Integers'):
+                    randmin = int(config.get('Integers', pair[0]).split(',')[0])
+                    randmax = int(config.get('Integers', pair[0]).split(',')[1])
+                    row[pair[0]] = random.randrange(randmin, randmax)
+                writer.writerow(row)
     except IOError:
         print "Error: cannot open file:" + ARGS.out_csv[0]
         sys.exit(1)
