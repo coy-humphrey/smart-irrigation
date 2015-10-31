@@ -1,0 +1,156 @@
+html{
+    box-sizing: border-box;
+    min-height: 100% !important;
+    background-color: #F5F4EB;
+}
+
+*, *:before, *:after {
+    box-sizing: inherit;
+}
+
+body{
+    box-sizing: inherit;
+    min-height: 100% !important;
+}
+
+label{
+    line-height: 1.5;
+}
+
+.name-row{
+    box-sizing: inherit;
+    overflow: hidden;
+    float: left;
+    width: 100%;
+    font-weight: bold;
+}
+
+.site-header{
+    margin-top: 50px;
+    box-sizing: inherit;
+    overflow: hidden;
+    height: 20%;
+    width: 100%;
+}
+
+.content{
+    box-sizing: inherit;
+    overflow: hidden;
+    height: 90%;
+    display: block;
+    width: 90%;
+    margin-left: 3%;
+    font-family: "Helvetica Neue",Helvetica,Arial,"Lucida Grande",sans-serif;
+}
+
+.campus-name{
+    box-sizing: inherit;
+    overflow: hidden;
+    border-bottom: none;
+    white-space: nowrap;
+    padding-bottom: 0;
+    display: block;
+    float: left;
+    margin-right: 35px;
+    min-width: 320px;
+    width: 23%;
+}
+
+.campus-logo-image{
+    box-sizing: inherit;
+    background: transparent;
+    background: no-repeat left top;
+
+    display: inline-block;
+    margin-right: 20px;
+    width: 100% !important;
+    float: left;
+}
+
+.title-text{
+    box-sizing: inherit;
+    float: left;
+    font-size: 35px;
+    color: rgb(0, 86, 172);
+}
+
+.site-name{
+    box-sizing: inherit;
+    overflow: hidden;
+    float: left;
+    margin-bottom: 0;
+}
+
+.login-content{
+    box-sizing: inherit;
+    margin-left: 10%;
+    overflow: hidden;
+    margin-top: 5%;
+    padding-bottom: 5em;
+    padding-top: 5em;
+    padding-left: 2em;
+    background-color: #ffffff;
+    border-bottom: solid 1px #d3d2d1;
+    box-shadow: 1px 1px 4px rgba(0,0,0,0.05);
+}
+
+.login-wrap{
+    box-sizing: inherit;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 1.2em;
+    overflow: hidden;
+}
+
+.login-box{
+    box-sizing: inherit;
+    background-color: #F2F0E4;
+    border: 1px solid #ded9bb;
+    border-bottom: 2px solid #d4cea6;
+    padding-top: 4em;
+    padding-bottom: 4em;
+    padding-left: 1em;
+    font-size: 15px;
+    text-align: left;
+    min-width: 20%;
+    padding-right: 200px;
+    display: block;
+    float: left;
+}
+
+#user-name{
+    box-sizing: inherit;
+    font-family: "Helvetica Neue",Helvetica,Arial,"Lucida Grande",sans-serif;
+    width: 290px;
+    padding: 4px 8px;
+    margin-bottom: 4px;
+    border: 1px solid #d3d2d1;
+    border-radius: 3px;
+    font-size: 110%;
+    line-height: 120%;
+}
+
+#password{
+    box-sizing: inherit;
+    font-family: "Helvetica Neue",Helvetica,Arial,"Lucida Grande",sans-serif;
+    width: 290px;
+    padding: 4px 8px;
+    margin-bottom: 4px;
+    border: 1px solid #d3d2d1;
+    border-radius: 3px;
+    font-size: 110%;
+    line-height: 120%;
+}
+
+.login-btn{
+    box-sizing: inherit;
+    font-family: "Helvetica Neue",Helvetica,Arial,"Lucida Grande",sans-serif;
+    display: inline-block;
+    text-align: center;
+    margin-top: 10px;
+    padding: 0.25em;
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
+    background-image: linear-gradient(#ffffff, #ffffff 25%, #e6e6e6)
+
+
+}
