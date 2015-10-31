@@ -25,8 +25,19 @@
                 </div>
             </div>
             <div class="home-content">
+                <div class="summary-wrapper">
 
+                </div>
+                <div class="weather-wrapper">
+                    <div class="weather-forecast">
+                        <!--Thanks to http://blog.forecast.io/forecast-embeds/ -->
+                        <iframe id="forecast_embed" type="text/html" frameborder="0" height="245" width="495px"
+                                src="http://forecast.io/embed/#lat=36.954871&lon=-122.048429&name=Natural Bridges High"> </iframe>
+                    </div>
+                </div>
             </div>
         </div>
+        <script>
+</script>
     </body>
 </html>
