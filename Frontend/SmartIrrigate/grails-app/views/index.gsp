@@ -12,9 +12,8 @@
                     <div class="name-row">
                         <div class="campus-name">
                             <a class="campus-logo-image">
-
-                                <!--Scalable image used -->>
-                                <img src="${resource(dir:'images',file:'ucsc-logo.svg')}" />
+                                <!--Scalable image used -->
+                                <img src="${resource(dir:'images',file:'ucsc-logo.svg')}"/>
                             </a>
                         </div>
                         <div class="site-name">
