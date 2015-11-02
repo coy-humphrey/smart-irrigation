@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify, redirect, url_for
-from flask.ext.mysql import MySQL
+from flaskext.mysql import MySQL
+import os
 import ConfigParser
 import mysql.connector
 import json
@@ -10,8 +11,12 @@ from datetime import datetime, timedelta
 
 mysql = MySQL()
 app = Flask(__name__)
-config = ConfigParser.RawConfigParser()
-config.read('config')
+config = ConfigParser.ConfigParser()
+parentdir= os.path.dirname(os.getcwd())
+configdir = os.path.dirname(os.getcwd())
+configpath = os.path.join(configdir, "config", "configAPI.ini")
+print(configpath)
+config.read(configpath)
 
 # Pull settings from the MySQL section of config file
 sql_config = {
