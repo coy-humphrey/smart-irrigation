@@ -26,7 +26,20 @@
             </div>
             <div class="home-content">
                 <div class="summary-wrapper">
-
+                    <div class="summary-box">
+                        <div class="summary-title">
+                            Summary
+                        </div>
+                        <div class="summary-content">
+                            Information <br>
+                            from <br>
+                            backend <br>
+                            database <br>
+                            will <br>
+                            go <br>
+                            here <br>
+                        </div>
+                    </div>
                 </div>
                 <div class="weather-wrapper">
                     <div class="weather-forecast">
