@@ -1,0 +1,6 @@
+#Thu, 22 Oct 2015 03:30:33 -0400
+
+grails.env=production
+info.app.name=SmartIrrigate
+info.app.version=0.1
+info.app.grailsVersion=3.0.8
