@@ -1,6 +1,4 @@
 #sqlDynamicsRows.py is a script that is evolving into a function library for python to access a Database.
-# UNTESTED DO NOT RUN ME
-# UNTESTED DO NOT RUN ME
 # This was written for python, but on a lab computer without a python environment. Testing will commence at home later.
 # So nothing has actually be run yet and is probably full of little errors.
 
@@ -40,7 +38,29 @@ def executeCommand (command) :
 	cursor.execute(command)
 	print cursor.fetchwarnings( )	
 	context.commit( )
+
+def showTables ( ) :
+	command = "SHOW TABLES"
+	cursor.execute(command)
+	tableList = cursor.fetchall()
 	
+	for table in tableList :
+		print table[0]
+
+#colDict is a mapping of col name to data type
+def createTable ( name, dataTypes ) :
+	global colFormat
+	
+	command = "CREATE TABLE " + name + " ("
+	
+	for x in range(len(colFormat)):
+		command += colFormat[x] + " " + dataTypes[x] +"," 
+
+	command = command[:-1]
+	command += ")"
+	executeCommand(command)
+	return
+		
 def clearRows ( ) :
 	global cursor
 	global context
@@ -150,8 +170,10 @@ def connectDB ( ) :
 	
 #current test
 colFormat = ["time", "s1", "s2", "s3", "temp"]	
+dataTypes = [ "VARCHAR(30)", "INT(6)", "INT(6)", "INT(6)", "DOUBLE(4,1)"]
 
 initConfig( )
 connectDB( )
-pushData( '1988-10-06 06:27:24', [50, 50, 50], 67)
+createTable("testNewTable", dataTypes)
+showTables( )
 closeDB( )
