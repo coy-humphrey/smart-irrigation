@@ -74,23 +74,30 @@ def clearRows ( ) :
 #push Data pushes a set of data contained in the list structure senseData to the SQL DB
 #pushData accepts time as a string, sensorList as a list of sensor readings, and temp as an integer or double
 #preconditions, colFormat is defined, Cursor is connected and nonnull, activeTable is nonnull
-def pushData ( time, sensorList, temp ) :
+def pushData ( rowDict ) :
 	global activeTable
 	global colFormat
 	global cursor
 	
 	#ensure precons are met and cardinality of input data matches col set.
 	initCheck ( )
-	if len(sensorList)+2 != len(colFormat) :
-		print "pushData( ) called with data that does not match col format."
-		sys.exit( )
+	
 	
 	jDelim = ', '
-	#create dictionary representative of data entry
-	addEntry = "INSERT INTO " + activeTable + "("
-	addEntry += jDelim.join(colFormat) + ") VALUES (\"%s\", " % (time)
-	addEntry += jDelim.join(str(reading) for reading in sensorList) + ", %d" % (temp)
-	addEntry += ")"
+	
+	addEntry = "INSERT INTO " + activeTable
+	cols = "("
+	vals = "("
+	
+	for key in rowDict :
+			cols += key + ","
+			if key == "time" :
+				vals += "\"" + rowDict[key] + "\","
+			else :
+				vals += rowDict[key] + ", "
+	
+	print addEntry + " " + cols[:-1] + ") VALUES " + vals[:-1] + ")"
+	addEntry += " " + cols[:-1] + ") VALUES " + vals[:-1] + ")"
 	
 	executeCommand( addEntry )
 	
@@ -169,11 +176,11 @@ def connectDB ( ) :
 	cursor = context.cursor( )
 	
 #current test
-colFormat = ["time", "s1", "s2", "s3", "temp"]	
-dataTypes = [ "VARCHAR(30)", "INT(6)", "INT(6)", "INT(6)", "DOUBLE(4,1)"]
-
+colFormat = ["username", "password", "tablename"]	
+dataTypes = [ "VARCHAR(30)", "VARCHAR(30)", "VARCHAR(30)"]
+testDict = { "time" : '2015-10-06 06:27:29', "s1" : '16', "s2" : '33', "s3" : '9', "temp" : '67' }
 initConfig( )
 connectDB( )
-createTable("testNewTable", dataTypes)
-showTables( )
+showTables()
+pushData(testDict)
 closeDB( )
