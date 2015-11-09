@@ -47,6 +47,19 @@ def showTables ( ) :
 	for table in tableList :
 		print table[0]
 
+		
+def selectCols (colList ) :
+	global cursor
+	global context
+	
+	command = "SELECT " + ",".join(colList) + " FROM " + activeTable;
+	
+	cursor.execute(command)
+	rtnDict = cursor.fetchall( )	
+	context.commit( )
+	
+	return rtnDict
+	
 #colDict is a mapping of col name to data type
 def createTable ( tableDict) :
 	global colFormat
@@ -178,5 +191,8 @@ testDict = { "time" : '2014-10-06 06:27:29', "s1" : '16', "s2" : '33', "s3" : '9
 initConfig( )
 connectDB( )
 showTables()
-pushData(testDict)
+activeTable = "userDB"
+test = selectCols(["username", "password", "tablename"])
+print test[0][0] + " R U L E S !"
+
 closeDB( )
