@@ -46,6 +46,7 @@ class GetField(Resource):
 
         return result
 
+
 # Given any number of fields, a start date and an end date, returns the average of each field
 # between the start and end date.
 # Example call: /get_average?field=temp&start=%222014-10-06_06:27:29%22&end=%222015-12-22_14:04:29%22
@@ -70,7 +71,36 @@ class GetAvg(Resource):
 
         return result
 
+
 def performQuery (query):
+    """Perform query and convert results into JSONable strings
+
+    Arguments:
+    query - A string containing a valid MySQL query
+
+    Performs the query given in the string query. Converts all of the results of the query into strings so
+    they can be easily converted into JSON.
+    """
+
+    results = performQueryRaw (query)
+    # Transform any values in the dicts from the weird MySQL formats into a usable string
+    for row in results:
+        for key in row:
+            row[key] = str(row[key])
+            
+    return results
+
+
+def performQueryRaw (query):
+    """Perform query and return raw results
+
+    Arguments:
+    query - A string containing a valid MySQL query
+
+    Performs the query given in the string query. Results may be in MySQL types that will fail to convert
+    to JSON.
+    """
+
     # Connect to db
     conn = MySQLdb.connect(**sql_config)
     cursor = conn.cursor()
@@ -85,19 +115,13 @@ def performQuery (query):
     for row in result:
         results.append(dict(zip(columns, row)))
 
-    # Transform any values in the dicts from the weird MySQL formats into a usable string
-    for row in results:
-        for c in columns:
-            row[c] = str(row[c])
-
     # Clean up and return
     cursor.close( )
     conn.close( )
     return results
 
-##
+
 ## Actually setup the Api resource routing here
-##
 api.add_resource(GetField, '/get_field')
 api.add_resource(GetAvg, '/get_average')
 
