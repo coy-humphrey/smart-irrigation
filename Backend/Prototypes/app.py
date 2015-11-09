@@ -2,6 +2,7 @@ from flask import Flask
 from flask_restful import reqparse, abort, Api, Resource
 import ConfigParser
 import MySQLdb
+import datetime
 
 
 app = Flask(__name__)
@@ -35,6 +36,16 @@ class GetField(Resource):
         parser.add_argument('end', required=True)
         # Parse arguments
         args = parser.parse_args()
+
+        # Check that the fields specified are actually in the database
+        if not validateFields (args['field']):
+            # TODO replace this with abort and some error message
+            print "Bad field"
+            return {"error": "Bad field"}
+
+        if not validateDates ([args['start'], args['end']]):
+            print "Bad dates"
+            return {"error": "Bad dates"}
         # Form query using the received arguments
         query = ("SELECT time, {} FROM {} where time BETWEEN {} and {}".format(",".join(args['field']), table, args['start'], args['end']))
         # Print for debugging
@@ -59,6 +70,16 @@ class GetAvg(Resource):
         parser.add_argument('end', required=True)
         # Parse arguments
         args = parser.parse_args()
+
+        # Check that the fields specified are actually in the database
+        if not validateFields (args['field']):
+            # TODO replace this with abort and some error message
+            print "Bad field"
+            return {"error": "Bad field"}
+
+        if not validateDates ([args['start'], args['end']]):
+            print "Bad dates"
+            return {"error": "Bad dates"}
         # Form query using the received arguments, in this case putting field arguments in the AVG function
         fields = map (lambda s: "AVG({}) as {}".format(s,s), args['field'])
         query = ("SELECT {} FROM {} where time BETWEEN {} and {}".format(",".join(fields), table, args['start'], args['end']))
@@ -67,6 +88,11 @@ class GetAvg(Resource):
 
         # Perform the query and store result
         result = performQuery (query)
+        # Convert from strings into doubles
+        for row in result:
+            for key in row:
+                row[key] = float(row[key])
+
         print result
 
         return result
@@ -87,7 +113,7 @@ def performQuery (query):
     for row in results:
         for key in row:
             row[key] = str(row[key])
-            
+
     return results
 
 
@@ -120,6 +146,22 @@ def performQueryRaw (query):
     conn.close( )
     return results
 
+def validateFields (fields):
+    for field in fields:
+        if field.lower() not in [x.lower() for x in config.options("fields")]:
+            return False
+    return True
+
+def validateDates (dates):
+    for d in dates:
+        if d.startswith('"') and d.endswith('"'):
+            d = d[1:-1]
+        try:
+            datetime.datetime.strptime(d, '%Y-%m-%d_%H:%M:%S')
+        except ValueError as e:
+            print e
+            return False
+    return True
 
 ## Actually setup the Api resource routing here
 api.add_resource(GetField, '/get_field')
