@@ -48,7 +48,7 @@ def showTables ( ) :
 		print table[0]
 
 #colDict is a mapping of col name to data type
-def createTable ( name, dataTypes ) :
+def createTable ( tableDict) :
 	global colFormat
 	
 	command = "CREATE TABLE " + name + " ("
@@ -91,12 +91,8 @@ def pushData ( rowDict ) :
 	
 	for key in rowDict :
 			cols += key + ","
-			if key == "time" :
-				vals += "\"" + rowDict[key] + "\","
-			else :
-				vals += rowDict[key] + ", "
+			vals += "\"" + rowDict[key] + "\","
 	
-	print addEntry + " " + cols[:-1] + ") VALUES " + vals[:-1] + ")"
 	addEntry += " " + cols[:-1] + ") VALUES " + vals[:-1] + ")"
 	
 	executeCommand( addEntry )
@@ -178,7 +174,7 @@ def connectDB ( ) :
 #current test
 colFormat = ["username", "password", "tablename"]	
 dataTypes = [ "VARCHAR(30)", "VARCHAR(30)", "VARCHAR(30)"]
-testDict = { "time" : '2015-10-06 06:27:29', "s1" : '16', "s2" : '33', "s3" : '9', "temp" : '67' }
+testDict = { "time" : '2014-10-06 06:27:29', "s1" : '16', "s2" : '33', "s3" : '9', "temp" : '67' }
 initConfig( )
 connectDB( )
 showTables()
