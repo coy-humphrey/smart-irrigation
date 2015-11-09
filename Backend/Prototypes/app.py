@@ -18,6 +18,8 @@ sql_config = {
   'db': config.get('MySQL', 'database'),
 }
 
+table = config.get("MySQL", 'table')
+
 # Arguments will be field: the name of the field to pull (specify field multiple times to pull multiple fields)
 # Start and end, the start and end dates. Results will be in the form of
 # a list of all times and fields (in a dict) that fall between the start and end date
@@ -34,7 +36,7 @@ class GetField(Resource):
         # Parse arguments
         args = parser.parse_args()
         # Form query using the received arguments
-        query = ("SELECT time, {} FROM entry where time BETWEEN {} and {}".format(",".join(args['field']), args['start'], args['end']))
+        query = ("SELECT time, {} FROM {} where time BETWEEN {} and {}".format(",".join(args['field']), table, args['start'], args['end']))
         # Print for debugging
         print query
 
@@ -58,7 +60,7 @@ class GetAvg(Resource):
         args = parser.parse_args()
         # Form query using the received arguments, in this case putting field arguments in the AVG function
         fields = map (lambda s: "AVG({}) as {}".format(s,s), args['field'])
-        query = ("SELECT {} FROM entry where time BETWEEN {} and {}".format(",".join(fields), args['start'], args['end']))
+        query = ("SELECT {} FROM {} where time BETWEEN {} and {}".format(",".join(fields), table, args['start'], args['end']))
         # Print for debugging
         print query
 
