@@ -3,7 +3,7 @@
 # So nothing has actually be run yet and is probably full of little errors.
 
 import ConfigParser
-import mysql.connector
+import MySQLdb
 import os
 import subprocess
 import sys
@@ -131,6 +131,7 @@ def initConfig ( ) :
 	global sql_config
 	global config
 	global activeTable
+	global colFormat
 
 	if not os.path.isfile( 'config' ) :
 		#attempt to generate config if it doesn't exist
@@ -146,13 +147,13 @@ def initConfig ( ) :
 	
 	sql_config = {
 		'user': config.get('MySQL', 'user'),
-		'password': config.get('MySQL', 'password'),
+		'passwd': config.get('MySQL', 'password'),
 		'host': config.get('MySQL', 'host'),
-		'database': config.get('MySQL', 'database'),
-		'raise_on_warnings': True,	
+		'db': config.get('MySQL', 'database'),
 	}
 	
 	activeTable = config.get('MySQL', 'table')
+	rowFormat = config.options('fields')
 
 #connectDB will use the initialized sql_config data to connect to the database and 
 #initialize the cursor and context variables.
@@ -169,30 +170,12 @@ def connectDB ( ) :
 	#attempt connection and tie to context
 	
 	try:
-		context = mysql.connector.connect(**sql_config)
-	except mysql.connector.Error as err:
-		if err.errno == mysql.connector.errorcode.ER_ACCESS_DENIED_ERROR:
-			print("Something is wrong with your user name or password\n")
-		elif err.errno == mysql.connector.errorcode.ER_BAD_DB_ERROR:
-			print("Database does not exist\n")
-		else:
-			print(err)
+		context = MySQLdb.connect(**sql_config)
+	except MySQLdb.Error as err:
+		print(err)
 	
 	#set context state machine to record errors and warnings
 	context.get_warnings = True
 	
 	#set initial cursor position
 	cursor = context.cursor( )
-	
-#current test
-colFormat = ["username", "password", "tablename"]	
-dataTypes = [ "VARCHAR(30)", "VARCHAR(30)", "VARCHAR(30)"]
-testDict = { "time" : '2014-10-06 06:27:29', "s1" : '16', "s2" : '33', "s3" : '9', "temp" : '67' }
-initConfig( )
-connectDB( )
-showTables()
-activeTable = "userDB"
-test = selectCols(["username", "password", "tablename"])
-print test[0][0] + " R U L E S !"
-
-closeDB( )
