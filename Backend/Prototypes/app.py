@@ -94,13 +94,13 @@ class GetAvg(Resource):
             abort(400, message=valid[1])
 
         # Form query using the received arguments, in this case putting field arguments in the AVG function
-        fields = map (lambda s: "AVG({}) as {}".format(s,s), args['field'])
+        fields = map (lambda s: "AVG({0}) as {0}".format(s), args['field'])
         query = ("SELECT {} FROM {} where time BETWEEN {} and {}".format(",".join(fields), table, args['start'], args['end']))
         # Print for debugging
         print query
 
         # Perform the query and store result
-        result = performQuery (query)
+        result = performQueryRaw (query)
         # Convert from strings into doubles
         for row in result:
             for key in row:
@@ -112,20 +112,23 @@ class GetAvg(Resource):
 
 
 def performQuery (query):
-    """Perform query and convert results into JSONable strings
+    """Perform query and convert results into JSONable objects
 
     Arguments:
     query - A string containing a valid MySQL query
 
-    Performs the query given in the string query. Converts all of the results of the query into strings so
-    they can be easily converted into JSON.
+    Performs the query given in the string query. Converts all of the results of the query into objects that
+    can be converted to JSON.
     """
 
     results = performQueryRaw (query)
     # Transform any values in the dicts from the weird MySQL formats into a usable string
     for row in results:
         for key in row:
-            row[key] = str(row[key])
+            functs = {"TIMESTAMP": str, "INT": int, "DOUBLE":float}
+            key_type = config.get('fields', key).upper()
+
+            row[key] = (functs[key_type])(row[key])
 
     return results
 
