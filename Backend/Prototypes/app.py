@@ -28,24 +28,28 @@ table = config.get("MySQL", 'table')
 # Sample call: /get_field?field=temp&start=%222014-10-06_06:27:29%22&end=%222015-12-22_14:04:29%22
 # Sample call (pulling multiple fields): /get_field?field=s1&field=s2&start=%222014-10-06_06:27:29%22&end=%222015-12-22_14:04:29%22
 class GetField(Resource):
+    def __init__(self):
+        self.parser = reqparse.RequestParser()
+        self.parser.add_argument('field', required=True, action='append')
+        self.parser.add_argument('start', required=True)
+        self.parser.add_argument('end', required=True)
+        super(GetField, self).__init__()
+
+    def validate(self, args):
+        fields_valid = validateFields (args['field'])
+        dates_valid = validateDates ([args['start'], args['end']])
+        message = ""
+        message += "" if fields_valid else "Invalid fields. "
+        message += "" if dates_valid else "Invalid dates."
+        return (fields_valid and dates_valid, message)
+
     def get(self):
-        # Set up argument parser
-        parser = reqparse.RequestParser()
-        parser.add_argument('field', required=True, action='append')
-        parser.add_argument('start', required=True)
-        parser.add_argument('end', required=True)
         # Parse arguments
-        args = parser.parse_args()
+        args = self.parser.parse_args()
 
-        # Check that the fields specified are actually in the database
-        if not validateFields (args['field']):
-            # TODO replace this with abort and some error message
-            print "Bad field"
-            return {"error": "Bad field"}
-
-        if not validateDates ([args['start'], args['end']]):
-            print "Bad dates"
-            return {"error": "Bad dates"}
+        valid = self.validate(args)
+        if not valid[0]:
+            abort(400, message=valid[1])
         # Form query using the received arguments
         query = ("SELECT time, {} FROM {} where time BETWEEN {} and {}".format(",".join(args['field']), table, args['start'], args['end']))
         # Print for debugging
@@ -62,24 +66,33 @@ class GetField(Resource):
 # between the start and end date.
 # Example call: /get_average?field=temp&start=%222014-10-06_06:27:29%22&end=%222015-12-22_14:04:29%22
 class GetAvg(Resource):
+    def __init__(self):
+        # Set up the RequestParser
+        self.parser = reqparse.RequestParser()
+        self.parser.add_argument('field', required=True, action='append')
+        self.parser.add_argument('start', required=True)
+        self.parser.add_argument('end', required=True)
+        super(GetAvg, self).__init__()
+
+    def validate(self, args):
+        # Make sure the request is valid
+        # Requests are valid if the fields exist in the db and the times are valid times
+        fields_valid = validateFields (args['field'])
+        dates_valid = validateDates ([args['start'], args['end']])
+        message = ""
+        message += "" if fields_valid else "Invalid fields. "
+        message += "" if dates_valid else "Invalid dates."
+        return (fields_valid and dates_valid, message)
+
     def get(self):
-        # Set up argument parser
-        parser = reqparse.RequestParser()
-        parser.add_argument('field', required=True, action='append')
-        parser.add_argument('start', required=True)
-        parser.add_argument('end', required=True)
         # Parse arguments
-        args = parser.parse_args()
+        args = self.parser.parse_args()
 
-        # Check that the fields specified are actually in the database
-        if not validateFields (args['field']):
-            # TODO replace this with abort and some error message
-            print "Bad field"
-            return {"error": "Bad field"}
+        # If the request is invalid, abort
+        valid = self.validate(args)
+        if not valid[0]:
+            abort(400, message=valid[1])
 
-        if not validateDates ([args['start'], args['end']]):
-            print "Bad dates"
-            return {"error": "Bad dates"}
         # Form query using the received arguments, in this case putting field arguments in the AVG function
         fields = map (lambda s: "AVG({}) as {}".format(s,s), args['field'])
         query = ("SELECT {} FROM {} where time BETWEEN {} and {}".format(",".join(fields), table, args['start'], args['end']))
