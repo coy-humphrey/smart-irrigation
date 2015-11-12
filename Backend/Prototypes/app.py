@@ -125,8 +125,12 @@ def performQuery (query):
     # Transform any values in the dicts from the weird MySQL formats into a usable string
     for row in results:
         for key in row:
-            functs = {"TIMESTAMP": str, "INT": int, "DOUBLE":float}
-            key_type = config.get('fields', key).upper()
+            functs = {"TIMESTAMP": str, "INT": int, "DOUBLE":float, None: str}
+            key_type = None
+            try: 
+                key_type = config.get('fields', key).upper()
+            except:
+                key_type = None 
 
             row[key] = (functs[key_type])(row[key])
 
