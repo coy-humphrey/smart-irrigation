@@ -122,16 +122,18 @@ def performQuery (query):
     """
 
     results = performQueryRaw (query)
-    # Transform any values in the dicts from the weird MySQL formats into a usable string
+    # Transform values from weird MySQL types into JSONable types
     for row in results:
         for key in row:
+            # Map datatype to conversion function. If datatype unknown, convert to string
             functs = {"TIMESTAMP": str, "INT": int, "DOUBLE":float, None: str}
+            # Try to determine data type
             key_type = None
             try: 
                 key_type = config.get('fields', key).upper()
             except:
                 key_type = None 
-
+            # Apply conversion function
             row[key] = (functs[key_type])(row[key])
 
     return results
