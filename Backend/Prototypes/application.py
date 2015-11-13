@@ -16,6 +16,7 @@ config = ConfigParser.ConfigParser()
 
 configdir = os.path.dirname(os.path.realpath(__file__))
 configpath = os.path.join(configdir, "config", "configAPI.ini")
+print configpath
 config.read(configpath)
 
 # Pull settings from the MySQL section of config file
@@ -32,6 +33,9 @@ application.config['MYSQL_DATABASE_PASSWORD'] = sql_config["password"]
 application.config['MYSQL_DATABASE_DB'] = sql_config["database"]
 application.config['MYSQL_DATABASE_HOST'] = sql_config["host"]
 
+def get_conn():
+  return MySQLdb.connect(host=application.config['MYSQL_DATABASE_HOST'], user=application.config['MYSQL_DATABASE_USER'],
+  passwd=application.config['MYSQL_DATABASE_PASSWORD'], db=application.config['MYSQL_DATABASE_DB'])
 
 @application.route('/')
 def api_root():
@@ -45,12 +49,39 @@ def api_mygarden():
 def api_watergraph():
   return "Watering Graph Here"
 
+@application.route('/mygarden/check_water', methods=['GET'])
+def api_checkwater():
+
+  conn = get_conn()
+  cursor = conn.cursor()
+
+  query = ("SELECT time, s1, s2, s3 FROM entry ORDER BY time DESC LIMIT 1")
+  cursor.execute(query)
+  row = cursor.fetchone()
+
+
+  d = collections.OrderedDict()
+  d['time'] = row[0]
+  d['hour_diff'] = int(math.ceil((abs(datetime.now() - row[0])).total_seconds() / 3600))
+  d['s1_watering'] = row[1] < 60 and d['hour_diff'] >= 12
+  d['s2_watering'] = row[2] < 60 and d['hour_diff'] >= 12
+  d['s3_watering'] = row[3] < 60 and d['hour_diff'] >= 12
+  conn.close()
+  return jsonify({'watering-check': d})
+
+def week_of_month(dt):
+    first_day = dt.replace(day=1)
+
+    dom = dt.day
+    adjusted_dom = dom + first_day.weekday()
+
+    return int(math.ceil(adjusted_dom/7.0))
+
 #calculate average temperature by days, weeks, months
 @application.route('/mygarden/temperature_graph', methods=['GET'])
 def api_tempgraph():
 
-  conn = MySQLdb.connect(host=application.config['MYSQL_DATABASE_HOST'], user=application.config['MYSQL_DATABASE_USER'],
-  passwd=application.config['MYSQL_DATABASE_PASSWORD'], db=application.config['MYSQL_DATABASE_DB'])
+  conn = get_conn()
   cursor = conn.cursor()
 
   query = ("SELECT time, temp FROM entry")
@@ -58,8 +89,7 @@ def api_tempgraph():
 
   temp_rows = cursor.fetchall()
   json_list = []
-  avg_temp = 0
-  day_count = 0
+  temps = []
   prev_week = temp_rows[0][0].isocalendar()[1]
 
   for row in temp_rows:
@@ -69,23 +99,22 @@ def api_tempgraph():
     year, week, dow = full_date.isocalendar()
     temp = row[1]
     if week == prev_week:
-      avg_temp += temp
+      temps.append(temp)
     else:
-      d['avg_temp'] = math.ceil(avg_temp/day_count)
-      json_list.append({full_date.strftime("%B") + ", " + str(year) + ' Week: ' + str(prev_week): d})
-      day_count = 0
-      avg_temp = temp
+      d['max_temp'] = max(temps)
+      d['avg_temp'] = int(math.ceil(reduce(lambda x, y: x + y, temps) / len(temps)))
+      d['min_temp'] = min(temps)
+      json_list.append({full_date.strftime("%B") + "_" + str(year) + ' Week: ' + str(prev_week): d})
+      temps = [temp]
     prev_week = week
-    day_count += 1
   conn.close()
 
-  return jsonify({'Avg Week Temperatures': json_list})
+  return jsonify({'week_temperatures': json_list})
 
 @application.route('/mygarden/temperature_graph/all', methods=['GET'])
 def api_tempgraph_individual():
 
-  conn = MySQLdb.connect(host=application.config['MYSQL_DATABASE_HOST'], user=application.config['MYSQL_DATABASE_USER'],
-  passwd=application.config['MYSQL_DATABASE_PASSWORD'], db=application.config['MYSQL_DATABASE_DB'])
+  conn = get_conn()
   cursor = conn.cursor()
 
   query = ("SELECT time, temp FROM entry")
@@ -123,8 +152,7 @@ def range(date_range):
   year, month, day = parse_date(date_end)
   date_end = datetime(year, month, day)
   
-  conn = MySQLdb.connect(host=application.config['MYSQL_DATABASE_HOST'], user=application.config['MYSQL_DATABASE_USER'],
-  passwd=application.config['MYSQL_DATABASE_PASSWORD'], db=application.config['MYSQL_DATABASE_DB'])
+  conn = get_conn()
   cursor = conn.cursor()
   query = ("SELECT time, temp FROM entry WHERE time BETWEEN '%s' and '%s'") % (date_start, date_end)
   cursor.execute(query)
@@ -144,8 +172,7 @@ def range(date_range):
 @application.route('/sensor_table', methods=['GET'])
 def api_sensors():
 
-  conn = MySQLdb.connect(host=application.config['MYSQL_DATABASE_HOST'], user=application.config['MYSQL_DATABASE_USER'],
-  passwd=application.config['MYSQL_DATABASE_PASSWORD'], db=application.config['MYSQL_DATABASE_DB'])
+  conn = get_conn()
   cursor = conn.cursor()
 
   query = ("SELECT time, s1, s2, s3, temp FROM entry")
@@ -169,5 +196,6 @@ def api_sensors():
 if __name__ == '__main__':
 
   mysql.init_app(application)
+  application.config["JSON_SORT_KEYS"] = False
   application.run(debug=True)
-  
+    
