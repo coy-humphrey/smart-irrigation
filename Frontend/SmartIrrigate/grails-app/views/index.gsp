@@ -2,7 +2,7 @@
 <html>
     <head>   </head>
         <asset:stylesheet src="main.css" />
-        <body>
+        <body onload="document.f.username.focus();">
 
             <!--content is a wrapper for the whole page -->
             <div class="content">
@@ -22,27 +22,11 @@
                     </div>
                 </div>
 
-                <!--login-content is a wrapper for the login section/second half of page -->
-                <div class="login-content">
-
-                    <!--login-wrap allows enclosure to have the darker color surrounded by white -->
-                    <div class="login-wrap">
-                        <div class="login-box">
-
-                            <!--Login form -->
-                            <form id="login" name="login">
-                                <label>Username:</label>
-                                <br>
-                                <input name="user-name" id="user-name" title="Enter your username here" type="text" value>
-                                <br>
-                                <label>Password:</label>
-                                <br>
-                                <input name="password" id="password" title="Enter your password here" type="password">
-                                <br>
-                                <input class="login-btn" name="Submit" type="submit" value="Login to Smart Irrigation">
-                            </form>
-                        </div>
-                    </div>
+                <div class="content">
+                    <br>
+                    <a href="/">Index</a>
+                    <br>
+                    <g:link controller="home">Home (Login Required)</g:link>
                 </div>
             </div>
 
