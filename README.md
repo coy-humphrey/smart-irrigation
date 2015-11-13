@@ -77,9 +77,9 @@ To confirm that SqlConnect.py was successful, run SqlPull.py and make sure the r
 
 ## Using the API
 
-### get_field
+### get_field_between_time
 
-Returns the entries for the specified field(s) from the given table between the given dates.
+Returns the entries for the specified field(s) and time from the given table between the given dates.
 
 Arguments
 * field: The name of the field to pull. Including this option multiple times allows you to pull multiple fields at once.
@@ -89,9 +89,9 @@ Arguments
 
 Example call:
 
-    /get_field?field=s1&field=s2&start=%222014-10-06_06:27:29%22&end=%222015-12-22_14:04:29%22&table=entry
+    /get_field_between_time?field=s1&field=s2&start=%222014-10-06_06:27:29%22&end=%222015-12-22_14:04:29%22&table=entry
 
-This will pull the s1 and s2 fields from the table entry. The start date is 2014-10-06_06:27:29 and the end date is 2015-12-22_14:04:29. The %22 is URL encoding for quote marks. The result is a JSON encoded list of dictionaries.
+This will pull the s1, s2 and time fields from the table entry. The start date is 2014-10-06_06:27:29 and the end date is 2015-12-22_14:04:29. The %22 is URL encoding for quote marks. The result is a JSON encoded list of dictionaries.
 
 Example result:
 
@@ -129,8 +129,8 @@ Returns the averages for the specified field(s) from the given table between the
 
 Arguments
 * field: The name of the field to pull. Including this option multiple times allows you to pull multiple fields at once.
-* start: The start time. The query will include all entries between the start time and the end time. Format: \"%Y-%m-%d_%H:%M:%S\"
-* end  : The end time. The query will include all entries between the start time and the end time. Format: \"%Y-%m-%d_%H:%M:%S\"
+* start: The start time. The query will include all entries between the start time and the end time. Format: `\"%Y-%m-%d_%H:%M:%S\"`
+* end  : The end time. The query will include all entries between the start time and the end time. Format: `\"%Y-%m-%d_%H:%M:%S\"`
 * table: The table to pull from.
 
 Example call:
@@ -145,5 +145,52 @@ Example result:
         {
             "s1": 47.3, 
             "s2": 43.0
+        }
+    ]
+
+### get_field_between_key
+
+Returns the specified fields (including the key field) that fall in between the start and end condition of the key field.
+
+Arguments
+* field: The name of the field to pull. Including this option multiple times allows you to pull multiple fields at once.
+* start: The start value. The query will include all entries with key between the start and end values.
+* end  : The end value. The query will include all entries with key the start and end values.
+* table: The table to pull from.
+* key  : The field to compare to the start and end values.
+
+Example call:
+
+    /get_field_between_key?field=s1&field=s2&start=80&end=120&table=entry&key=temp
+
+This will pull the values of s1, s2, and temp from the entry table from all entries where temperature is between 80 and 120.
+
+Example result:
+
+    [
+        {
+            "s1": 16, 
+            "s2": 33, 
+            "temp": 83
+        }, 
+        {
+            "s1": 16, 
+            "s2": 33, 
+            "temp": 100
+        }, 
+        {
+            "s1": 63, 
+            "s2": 57, 
+            "temp": 81
+        }, 
+        {
+            "s1": 21, 
+            "s2": 56, 
+            "temp": 97
+        }, 
+        {
+            "s1": 99, 
+            "s2": 21, 
+            "temp": 83
         }
     ]
