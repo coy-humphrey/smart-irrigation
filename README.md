@@ -83,11 +83,13 @@ Returns the entries for the specified field(s) from the given table between the 
 
 Arguments
 * field: The name of the field to pull. Including this option multiple times allows you to pull multiple fields at once.
-* start: The start time. The query will include all entries between the start time and the end time. Format: \"%Y-%m-%d_%H:%M:%S\"
-* end  : The end time. The query will include all entries between the start time and the end time. Format: \"%Y-%m-%d_%H:%M:%S\"
+* start: The start time. The query will include all entries between the start time and the end time. Format: `\"%Y-%m-%d_%H:%M:%S\"`
+* end  : The end time. The query will include all entries between the start time and the end time. Format: `\"%Y-%m-%d_%H:%M:%S\"`
 * table: The table to pull from.
 
-Example call: /get_field?field=s1&field=s2&start=%222014-10-06_06:27:29%22&end=%222015-12-22_14:04:29%22&table=entry
+Example call:
+
+    /get_field?field=s1&field=s2&start=%222014-10-06_06:27:29%22&end=%222015-12-22_14:04:29%22&table=entry
 
 This will pull the s1 and s2 fields from the table entry. The start date is 2014-10-06_06:27:29 and the end date is 2015-12-22_14:04:29. The %22 is URL encoding for quote marks. The result is a JSON encoded list of dictionaries.
 
@@ -131,7 +133,9 @@ Arguments
 * end  : The end time. The query will include all entries between the start time and the end time. Format: \"%Y-%m-%d_%H:%M:%S\"
 * table: The table to pull from.
 
-Example call: /get_average?field=s1&field=s2&start=%222014-10-06_06:27:29%22&end=%222015-12-22_14:04:29%22&table=entry
+Example call:
+
+    /get_average?field=s1&field=s2&start=%222014-10-06_06:27:29%22&end=%222015-12-22_14:04:29%22&table=entry
 
 This will pull the averages of s1 and s2 from the table entry. The start date is 2014-10-06_06:27:29 and the end date is 2015-12-22_14:04:29. The %22 is URL encoding for quote marks.
 
