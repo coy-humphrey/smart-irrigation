@@ -1,11 +1,13 @@
 from flask import Flask
 from flask_restful import reqparse, abort, Api, Resource
+from flask_httpauth import HTTPBasicAuth
 import ConfigParser
 import MySQLdb
 import datetime
 
 
 app = Flask(__name__)
+auth = HTTPBasicAuth()
 api = Api(app)
 
 config = ConfigParser.RawConfigParser()
@@ -17,6 +19,10 @@ sql_config = {
   'passwd': config.get('MySQL', 'password'),
   'host': config.get('MySQL', 'host'),
   'db': config.get('MySQL', 'database'),
+}
+
+users = {
+	"testuser" : "password"
 }
 
 table = config.get("MySQL", 'table')
@@ -111,6 +117,29 @@ class GetAvg(Resource):
         return result
 
 
+#Authentication Functions, first hardcoded later DB interacted
+@auth.get_password
+def get_pw(username):
+	if username in users :
+		return users.get(username)
+	return None
+		
+@app.route('/')
+@auth.login_required
+def index():
+	return "All Hail %s!" % (auth.username())
+	
+#for hashing if/when deemed neccessary
+#@auth.hash_password
+#def hash_pw (username, password) :
+#	get_salt(username)
+#	return hash(password,salt)
+#
+#	OR
+#
+#@auth.verify_password
+#def verify_pw(username, password) :
+#	return ourVerificationFunction(usr,pw)
 def performQuery (query):
     """Perform query and convert results into JSONable objects
 
