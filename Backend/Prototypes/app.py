@@ -1,17 +1,22 @@
-from flask import Flask
+from flask import Flask, redirect, url_for
 from flask_restful import reqparse, abort, Api, Resource
 from flask_httpauth import HTTPBasicAuth
 import ConfigParser
 import MySQLdb
 import datetime
+import os
 
 
-app = Flask(__name__)
+application = Flask(__name__)
 auth = HTTPBasicAuth()
-api = Api(app)
+api = Api(application)
 
-config = ConfigParser.RawConfigParser()
-config.read("config")
+
+config = ConfigParser.ConfigParser()
+configdir = os.path.dirname(os.path.realpath(__file__))
+configpath = os.path.join(configdir, "config", "configAPI.ini")
+config.read(configpath)
+
 
 # Pull settings from the MySQL section of config file
 sql_config = {
@@ -21,9 +26,15 @@ sql_config = {
   'db': config.get('MySQL', 'database'),
 }
 
-users = {
-	"testuser" : "password"
-}
+class User(Resource):
+    def get(self, username):
+        query = "SELECT tablename from userDB WHERE username='%s'" % username
+        result = performQueryRaw(query)
+        if result == []:
+            return "No user with this username"
+        else:
+            print(result)
+            return {'username': username, 'tables': result[0]['tablename']}
 
 table = config.get("MySQL", 'table')
 
@@ -49,7 +60,7 @@ class GetField(Resource):
         message += "" if dates_valid else "Invalid dates."
         return (fields_valid and dates_valid, message)
 
-    def get(self):
+    def get(self, username, table):
         # Parse arguments
         args = self.parser.parse_args()
 
@@ -72,6 +83,7 @@ class GetField(Resource):
 # between the start and end date.
 # Example call: /get_average?field=temp&start=%222014-10-06_06:27:29%22&end=%222015-12-22_14:04:29%22
 class GetAvg(Resource):
+
     def __init__(self):
         # Set up the RequestParser
         self.parser = reqparse.RequestParser()
@@ -90,7 +102,8 @@ class GetAvg(Resource):
         message += "" if dates_valid else "Invalid dates."
         return (fields_valid and dates_valid, message)
 
-    def get(self):
+    @auth.login_required
+    def get(self, username, table):
         # Parse arguments
         args = self.parser.parse_args()
 
@@ -116,35 +129,39 @@ class GetAvg(Resource):
 
         return result
 
-
 #Authentication Functions, first hardcoded later DB interacted
 @auth.get_password
 def get_pw(username):
-	#if username in users :
-	#	return users.get(username)
-		
-	userQry = performQueryRaw("SELECT password FROM userDB WHERE username='%s'" % username);
-	if not userQry :
-		return None
-		
-	return userQry[0]["password"]
-		
-@app.route('/')
-@auth.login_required
-def index():
-	return "All Hail %s!" % (auth.username())
-	
+    #if username in users :
+    #   return users.get(username)
+        
+    userQry = performQueryRaw("SELECT password FROM userDB WHERE username='%s'" % username);
+    if not userQry :
+        return None
+        
+    return userQry[0]["password"]
+        
+# @app.route('/')
+# @auth.login_required
+# def index():
+#   return "All Hail %s!" % (auth.username())
+
+class Welcome(Resource):
+    @auth.login_required
+    def get(self):
+        return "All Hail %s!" % (auth.username())
+    
 #for hashing if/when deemed neccessary
 #@auth.hash_password
 #def hash_pw (username, password) :
-#	get_salt(username)
-#	return hash(password,salt)
+#   get_salt(username)
+#   return hash(password,salt)
 #
-#	OR
+#   OR
 #
 #@auth.verify_password
 #def verify_pw(username, password) :
-#	return ourVerificationFunction(usr,pw)
+#   return ourVerificationFunction(usr,pw)
 
 def performQuery (query):
     """Perform query and convert results into JSONable objects
@@ -221,9 +238,11 @@ def validateDates (dates):
     return True
 
 ## Actually setup the Api resource routing here
-api.add_resource(GetField, '/get_field')
-api.add_resource(GetAvg, '/get_average')
+api.add_resource(Welcome, '/')
+api.add_resource(GetField, '/users/<string:username>/mygarden/<string:table>/get_field')
+api.add_resource(GetAvg, '/users/<string:username>/mygarden/<string:table>/get_average')
+api.add_resource(User, '/users/<string:username>/mygarden')
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug=True)
+    application.run(debug=True)
