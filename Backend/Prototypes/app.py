@@ -131,12 +131,11 @@ class GetAvg(Resource):
         return result
 
 #Authentication Functions, first hardcoded later DB interacted
-@auth.get_password
 def get_pw(username):
         
     userQry = performQueryRaw("SELECT password FROM userDB WHERE username='%s'" % username);
     if not userQry :
-        return None
+        return ""
         
     return userQry[0]["password"]
 		
