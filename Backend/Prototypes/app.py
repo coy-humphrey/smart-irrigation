@@ -29,6 +29,12 @@ sql_config = {
   'db': config.get('MySQL', 'database'),
 }
 
+# Basic test to see if authentication is working
+class Welcome(Resource):
+    decorators = [auth.login_required]
+    def get(self):
+        return "All Hail %s!" % (auth.username())
+
 # Arguments will be field: the name of the field to pull (specify field multiple times to pull multiple fields)
 # Start and end, the start and end dates. Results will be in the form of
 # a list of all times and fields (in a dict) that fall between the start and end date
@@ -133,11 +139,6 @@ def get_pw(username):
         return None
         
     return userQry[0]["password"]
-
-class Welcome(Resource):
-    decorators = [auth.login_required]
-    def get(self):
-        return "All Hail %s!" % (auth.username())
 		
  #flask function to verify pw.
 @auth.verify_password
