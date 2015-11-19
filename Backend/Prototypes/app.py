@@ -22,10 +22,6 @@ sql_config = {
   'db': config.get('MySQL', 'database'),
 }
 
-users = {
-	"testuser" : "password"
-}
-
 table = config.get("MySQL", 'table')
 
 # Arguments will be field: the name of the field to pull (specify field multiple times to pull multiple fields)
@@ -121,8 +117,6 @@ class GetAvg(Resource):
 #Authentication Functions, first hardcoded later DB interacted
 @auth.get_password
 def get_pw(username):
-	#if username in users :
-	#	return users.get(username)
 		
 	userQry = performQueryRaw("SELECT password FROM userDB WHERE username='%s'" % username);
 	if not userQry :
@@ -135,19 +129,19 @@ def get_pw(username):
 def index():
 	return "All Hail %s!" % (auth.username())
 	
-#for hashing if/when deemed neccessary
-#@auth.hash_password
-#def hash_pw (username, password) :
-#	get_salt(username)
-#	return hash(password,salt)
+#flask function to verify pw.
+@auth.verify_password
+def verify_pw(username, password):
+    return check_pw(username, password)
 
+#hashes a password for storage using SHA1 + salt
 def hashed_pw(password) :
 	return generate_password_hash(password)
 
-
+#user Werkzeug function to check unhashed password against hashed.
 def check_pw(username, password) :
 	return check_password_hash(get_pw(username), password)
-	
+
 def performQuery (query):
     """Perform query and convert results into JSONable objects
 
