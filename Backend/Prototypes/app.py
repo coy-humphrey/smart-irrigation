@@ -1,6 +1,7 @@
 from flask import Flask, redirect, url_for
 from flask_restful import reqparse, abort, Api, Resource
 from flask_httpauth import HTTPBasicAuth
+from werkzeug.security import generate_password_hash, check_password_hash
 import ConfigParser
 import MySQLdb
 import datetime
@@ -11,12 +12,12 @@ application = Flask(__name__)
 auth = HTTPBasicAuth()
 api = Api(application)
 
-#config = ConfigParser.RawConfigParser()
-#config.read('config')
-config = ConfigParser.ConfigParser()
-configdir = os.path.dirname(os.path.realpath(__file__))
-configpath = os.path.join(configdir, "config", "configAPI.ini")
-config.read(configpath)
+config = ConfigParser.RawConfigParser()
+config.read('config')
+#config = ConfigParser.ConfigParser()
+#configdir = os.path.dirname(os.path.realpath(__file__))
+#configpath = os.path.join(configdir, "config", "configAPI.ini")
+#config.read(configpath)
 
 
 
@@ -138,36 +139,32 @@ class GetAvg(Resource):
 #Authentication Functions, first hardcoded later DB interacted
 @auth.get_password
 def get_pw(username):
-    #if username in users :
-    #   return users.get(username)
         
     userQry = performQueryRaw("SELECT password FROM userDB WHERE username='%s'" % username);
     if not userQry :
         return None
         
     return userQry[0]["password"]
-        
-# @app.route('/')
-# @auth.login_required
-# def index():
-#   return "All Hail %s!" % (auth.username())
 
+@application.route('/')
+@auth.login_required
 class Welcome(Resource):
     decorators = [auth.login_required]
     def get(self):
         return "All Hail %s!" % (auth.username())
-    
-#for hashing if/when deemed neccessary
-#@auth.hash_password
-#def hash_pw (username, password) :
-#   get_salt(username)
-#   return hash(password,salt)
-#
-#   OR
-#
-#@auth.verify_password
-#def verify_pw(username, password) :
-#   return ourVerificationFunction(usr,pw)
+		
+ #flask function to verify pw.
+@auth.verify_password
+def verify_pw(username, password):
+    return check_pw(username, password)
+
+#hashes a password for storage using SHA1 + salt
+def hashed_pw(password) :
+	return generate_password_hash(password)
+
+#user Werkzeug function to check unhashed password against hashed.
+def check_pw(username, password) :
+	return check_password_hash(get_pw(username), password)
 
 def performQuery (query):
     """Perform query and convert results into JSONable objects
