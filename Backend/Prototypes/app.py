@@ -12,10 +12,8 @@ auth = HTTPBasicAuth()
 api = Api(application)
 
 
-config = ConfigParser.ConfigParser()
-configdir = os.path.dirname(os.path.realpath(__file__))
-configpath = os.path.join(configdir, "config", "configAPI.ini")
-config.read(configpath)
+config = ConfigParser.RawConfigParser()
+config.read('config')
 
 
 # Pull settings from the MySQL section of config file
@@ -45,11 +43,14 @@ table = config.get("MySQL", 'table')
 # Sample call: /get_field?field=temp&start=%222014-10-06_06:27:29%22&end=%222015-12-22_14:04:29%22
 # Sample call (pulling multiple fields): /get_field?field=s1&field=s2&start=%222014-10-06_06:27:29%22&end=%222015-12-22_14:04:29%22
 class GetField(Resource):
+    decorators = [auth.login_required]
+
     def __init__(self):
         self.parser = reqparse.RequestParser()
         self.parser.add_argument('field', required=True, action='append')
         self.parser.add_argument('start', required=True)
         self.parser.add_argument('end', required=True)
+        self.parser.add_argument('table', required=True)
         super(GetField, self).__init__()
 
     def validate(self, args):
@@ -60,7 +61,7 @@ class GetField(Resource):
         message += "" if dates_valid else "Invalid dates."
         return (fields_valid and dates_valid, message)
 
-    def get(self, username, table):
+    def get(self):
         # Parse arguments
         args = self.parser.parse_args()
 
@@ -68,7 +69,7 @@ class GetField(Resource):
         if not valid[0]:
             abort(400, message=valid[1])
         # Form query using the received arguments
-        query = ("SELECT time, {} FROM {} where time BETWEEN {} and {}".format(",".join(args['field']), table, args['start'], args['end']))
+        query = ("SELECT time, {} FROM {} where time BETWEEN {} and {}".format(",".join(args['field']), args['table'], args['start'], args['end']))
         # Print for debugging
         print query
 
@@ -83,6 +84,7 @@ class GetField(Resource):
 # between the start and end date.
 # Example call: /get_average?field=temp&start=%222014-10-06_06:27:29%22&end=%222015-12-22_14:04:29%22
 class GetAvg(Resource):
+    decorators = [auth.login_required]
 
     def __init__(self):
         # Set up the RequestParser
@@ -90,6 +92,7 @@ class GetAvg(Resource):
         self.parser.add_argument('field', required=True, action='append')
         self.parser.add_argument('start', required=True)
         self.parser.add_argument('end', required=True)
+        self.parser.add_argument('table', required=True)
         super(GetAvg, self).__init__()
 
     def validate(self, args):
@@ -102,8 +105,7 @@ class GetAvg(Resource):
         message += "" if dates_valid else "Invalid dates."
         return (fields_valid and dates_valid, message)
 
-    @auth.login_required
-    def get(self, username, table):
+    def get(self):
         # Parse arguments
         args = self.parser.parse_args()
 
@@ -114,7 +116,7 @@ class GetAvg(Resource):
 
         # Form query using the received arguments, in this case putting field arguments in the AVG function
         fields = map (lambda s: "AVG({0}) as {0}".format(s), args['field'])
-        query = ("SELECT {} FROM {} where time BETWEEN {} and {}".format(",".join(fields), table, args['start'], args['end']))
+        query = ("SELECT {} FROM {} where time BETWEEN {} and {}".format(",".join(fields), args['table'], args['start'], args['end']))
         # Print for debugging
         print query
 
@@ -147,7 +149,7 @@ def get_pw(username):
 #   return "All Hail %s!" % (auth.username())
 
 class Welcome(Resource):
-    @auth.login_required
+    
     def get(self):
         return "All Hail %s!" % (auth.username())
     
@@ -239,9 +241,11 @@ def validateDates (dates):
 
 ## Actually setup the Api resource routing here
 api.add_resource(Welcome, '/')
-api.add_resource(GetField, '/users/<string:username>/mygarden/<string:table>/get_field')
-api.add_resource(GetAvg, '/users/<string:username>/mygarden/<string:table>/get_average')
 api.add_resource(User, '/users/<string:username>/mygarden')
+
+api.add_resource(GetField, '/get_field')
+api.add_resource(GetAvg, '/get_average')
+
 
 
 if __name__ == '__main__':
