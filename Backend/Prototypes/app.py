@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_restful import reqparse, abort, Api, Resource
 from flask_httpauth import HTTPBasicAuth
+from werkzeug.security import generate_password_hash, check_password_hash
 import ConfigParser
 import MySQLdb
 import datetime
@@ -139,13 +140,14 @@ def index():
 #def hash_pw (username, password) :
 #	get_salt(username)
 #	return hash(password,salt)
-#
-#	OR
-#
-#@auth.verify_password
-#def verify_pw(username, password) :
-#	return ourVerificationFunction(usr,pw)
 
+def hashed_pw(password) :
+	return generate_password_hash(password)
+
+
+def check_pw(username, password) :
+	return check_password_hash(get_pw(username), password)
+	
 def performQuery (query):
     """Perform query and convert results into JSONable objects
 
