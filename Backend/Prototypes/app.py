@@ -134,8 +134,6 @@ def get_pw(username):
         
     return userQry[0]["password"]
 
-@application.route('/')
-@auth.login_required
 class Welcome(Resource):
     decorators = [auth.login_required]
     def get(self):
@@ -230,7 +228,6 @@ def validateDates (dates):
 
 ## Actually setup the Api resource routing here
 api.add_resource(Welcome, '/')
-api.add_resource(User, '/users/<string:username>/mygarden')
 
 api.add_resource(GetField, '/get_field')
 api.add_resource(GetAvg, '/get_average')
