@@ -1,11 +1,9 @@
 #sqlDynamicsRows.py is a script that is evolving into a function library for python to access a Database.
-# UNTESTED DO NOT RUN ME
-# UNTESTED DO NOT RUN ME
 # This was written for python, but on a lab computer without a python environment. Testing will commence at home later.
 # So nothing has actually be run yet and is probably full of little errors.
 
 import ConfigParser
-import mysql.connector
+import MySQLdb
 import os
 import subprocess
 import sys
@@ -40,7 +38,42 @@ def executeCommand (command) :
 	cursor.execute(command)
 	print cursor.fetchwarnings( )	
 	context.commit( )
+
+def showTables ( ) :
+	command = "SHOW TABLES"
+	cursor.execute(command)
+	tableList = cursor.fetchall()
 	
+	for table in tableList :
+		print table[0]
+
+		
+def selectCols (colList ) :
+	global cursor
+	global context
+	
+	command = "SELECT " + ",".join(colList) + " FROM " + activeTable;
+	
+	cursor.execute(command)
+	rtnDict = cursor.fetchall( )	
+	context.commit( )
+	
+	return rtnDict
+	
+#colDict is a mapping of col name to data type
+def createTable ( tableDict) :
+	global colFormat
+	
+	command = "CREATE TABLE " + name + " ("
+	
+	for x in range(len(colFormat)):
+		command += colFormat[x] + " " + dataTypes[x] +"," 
+
+	command = command[:-1]
+	command += ")"
+	executeCommand(command)
+	return
+		
 def clearRows ( ) :
 	global cursor
 	global context
@@ -54,23 +87,26 @@ def clearRows ( ) :
 #push Data pushes a set of data contained in the list structure senseData to the SQL DB
 #pushData accepts time as a string, sensorList as a list of sensor readings, and temp as an integer or double
 #preconditions, colFormat is defined, Cursor is connected and nonnull, activeTable is nonnull
-def pushData ( time, sensorList, temp ) :
+def pushData ( rowDict ) :
 	global activeTable
 	global colFormat
 	global cursor
 	
 	#ensure precons are met and cardinality of input data matches col set.
 	initCheck ( )
-	if len(sensorList)+2 != len(colFormat) :
-		print "pushData( ) called with data that does not match col format."
-		sys.exit( )
+	
 	
 	jDelim = ', '
-	#create dictionary representative of data entry
-	addEntry = "INSERT INTO " + activeTable + "("
-	addEntry += jDelim.join(colFormat) + ") VALUES (\"%s\", " % (time)
-	addEntry += jDelim.join(str(reading) for reading in sensorList) + ", %d" % (temp)
-	addEntry += ")"
+	
+	addEntry = "INSERT INTO " + activeTable
+	cols = "("
+	vals = "("
+	
+	for key in rowDict :
+			cols += key + ","
+			vals += "\"" + rowDict[key] + "\","
+	
+	addEntry += " " + cols[:-1] + ") VALUES " + vals[:-1] + ")"
 	
 	executeCommand( addEntry )
 	
@@ -95,6 +131,7 @@ def initConfig ( ) :
 	global sql_config
 	global config
 	global activeTable
+	global colFormat
 
 	if not os.path.isfile( 'config' ) :
 		#attempt to generate config if it doesn't exist
@@ -110,13 +147,13 @@ def initConfig ( ) :
 	
 	sql_config = {
 		'user': config.get('MySQL', 'user'),
-		'password': config.get('MySQL', 'password'),
+		'passwd': config.get('MySQL', 'password'),
 		'host': config.get('MySQL', 'host'),
-		'database': config.get('MySQL', 'database'),
-		'raise_on_warnings': True,	
+		'db': config.get('MySQL', 'database'),
 	}
 	
 	activeTable = config.get('MySQL', 'table')
+	rowFormat = config.options('fields')
 
 #connectDB will use the initialized sql_config data to connect to the database and 
 #initialize the cursor and context variables.
@@ -133,25 +170,12 @@ def connectDB ( ) :
 	#attempt connection and tie to context
 	
 	try:
-		context = mysql.connector.connect(**sql_config)
-	except mysql.connector.Error as err:
-		if err.errno == mysql.connector.errorcode.ER_ACCESS_DENIED_ERROR:
-			print("Something is wrong with your user name or password\n")
-		elif err.errno == mysql.connector.errorcode.ER_BAD_DB_ERROR:
-			print("Database does not exist\n")
-		else:
-			print(err)
+		context = MySQLdb.connect(**sql_config)
+	except MySQLdb.Error as err:
+		print(err)
 	
 	#set context state machine to record errors and warnings
 	context.get_warnings = True
 	
 	#set initial cursor position
 	cursor = context.cursor( )
-	
-#current test
-colFormat = ["time", "s1", "s2", "s3", "temp"]	
-
-initConfig( )
-connectDB( )
-pushData( '1988-10-06 06:27:24', [50, 50, 50], 67)
-closeDB( )

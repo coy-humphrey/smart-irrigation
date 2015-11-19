@@ -23,6 +23,9 @@ config.add_section('fields')
 config.set('fields', 'time_field', 'TIMESTAMP')
 config.set('fields', 'integer_field', 'INT')
 
+config.add_section('weather')
+config.set('weather','key','copy_key_here')
+
 # Writing our configuration file to 'example.cfg'
 with open('config', 'wb') as configfile:
     config.write(configfile)
