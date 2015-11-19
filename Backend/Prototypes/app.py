@@ -29,18 +29,6 @@ sql_config = {
   'db': config.get('MySQL', 'database'),
 }
 
-class User(Resource):
-    def get(self, username):
-        query = "SELECT tablename from userDB WHERE username='%s'" % username
-        result = performQueryRaw(query)
-        if result == []:
-            return "No user with this username"
-        else:
-            print(result)
-            return {'username': username, 'tables': result[0]['tablename']}
-
-table = config.get("MySQL", 'table')
-
 # Arguments will be field: the name of the field to pull (specify field multiple times to pull multiple fields)
 # Start and end, the start and end dates. Results will be in the form of
 # a list of all times and fields (in a dict) that fall between the start and end date
