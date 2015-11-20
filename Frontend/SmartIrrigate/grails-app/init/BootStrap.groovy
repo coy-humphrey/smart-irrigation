@@ -8,8 +8,8 @@ class BootStrap {
         switch (Environment.current) {
             case Environment.DEVELOPMENT:
 
-                def user = new User(username: 'ian', password: 'password', enabled: true, accountExpired: false, accountLocked: false, credentialsExpired: false ).save(failOnError: true)
-                def admin = new User(username: 'admin', password: 'admin', enabled: true, accountExpired: false, accountLocked: false, credentialsExpired: false ).save(failOnError: true)
+                def user = new User(username: 'ian', password: 'password', enabled: true, testing: 'penis', accountExpired: false, accountLocked: false, credentialsExpired: false ).save(failOnError: true)
+                def admin = new User(username: 'admin', password: 'admin', enabled: true, testing: 'notpenis', accountExpired: false, accountLocked: false, credentialsExpired: false ).save(failOnError: true)
 
                 def roleUser = new Authority(authority: 'ROLE_USER').save(failOnError: true)
                 def roleAdmin = new Authority(authority: 'ROLE_ADMIN').save(failOnError: true)
