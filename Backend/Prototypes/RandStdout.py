@@ -13,7 +13,6 @@ import random
 import time
 import ConfigParser
 import threading
-import collections
 from datetime import datetime
 
 
