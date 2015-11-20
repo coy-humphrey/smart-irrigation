@@ -48,7 +48,7 @@ class GetFieldBetweenTime(Resource):
         self.parser.add_argument('start', required=True)
         self.parser.add_argument('end', required=True)
         self.parser.add_argument('table', required=True)
-        super(GetField, self).__init__()
+        super(GetFieldBetweenTime, self).__init__()
 
     def validate(self, args):
         fields_valid = validateFields (args['field'])
@@ -269,7 +269,7 @@ def validateKey (key):
 ## Actually setup the Api resource routing here
 api.add_resource(Welcome, '/')
 
-api.add_resource(GetFieldBetweenTime, '/get_field', 'get_field_between_time')
+api.add_resource(GetFieldBetweenTime, '/get_field', '/get_field_between_time')
 api.add_resource(GetAvg, '/get_average')
 api.add_resource(GetFieldBetweenKey, '/get_field_between_key')
 
