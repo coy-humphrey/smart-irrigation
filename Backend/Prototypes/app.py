@@ -261,6 +261,11 @@ def validateDates (dates):
             return False
     return True
 
+def validateKey (key):
+    if key.lower() not in [x.lower() for x in config.options("fields")]:
+        return False
+    return True
+
 ## Actually setup the Api resource routing here
 api.add_resource(Welcome, '/')
 
