@@ -16,7 +16,7 @@ class LoginController {
 
     }
 
-    // Get current user from LoginController
+    // Get current user from SpringSecurity
     @RequestMapping(value="/login", method = RequestMethod.GET)
     static public User getCurrentUser(){
         User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal()
