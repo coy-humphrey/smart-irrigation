@@ -1,25 +1,17 @@
-from flask import Flask, redirect, url_for
+from flask import Flask
 from flask_restful import reqparse, abort, Api, Resource
 from flask_httpauth import HTTPBasicAuth
-from werkzeug.security import generate_password_hash, check_password_hash
 import ConfigParser
 import MySQLdb
 import datetime
-import os
 
 
-application = Flask(__name__)
+app = Flask(__name__)
 auth = HTTPBasicAuth()
-api = Api(application)
+api = Api(app)
 
 config = ConfigParser.RawConfigParser()
-config.read('config')
-#config = ConfigParser.ConfigParser()
-#configdir = os.path.dirname(os.path.realpath(__file__))
-#configpath = os.path.join(configdir, "config", "configAPI.ini")
-#config.read(configpath)
-
-
+config.read("config")
 
 # Pull settings from the MySQL section of config file
 sql_config = {
@@ -29,28 +21,25 @@ sql_config = {
   'db': config.get('MySQL', 'database'),
 }
 
-# Basic test to see if authentication is working
-class Welcome(Resource):
-    decorators = [auth.login_required]
-    def get(self):
-        return "All Hail %s!" % (auth.username())
+users = {
+	"testuser" : "password"
+}
+
+table = config.get("MySQL", 'table')
 
 # Arguments will be field: the name of the field to pull (specify field multiple times to pull multiple fields)
 # Start and end, the start and end dates. Results will be in the form of
 # a list of all times and fields (in a dict) that fall between the start and end date
 # Times and fields will be expressed as Strings
-# Sample call: /get_field?field=temp&start=%222014-10-06_06:27:29%22&end=%222015-12-22_14:04:29%22
-# Sample call (pulling multiple fields): /get_field?table=entry&field=s1&field=s2&start=%222014-10-06_06:27:29%22&end=%222015-12-22_14:04:29%22
-class GetField(Resource):
-    decorators = [auth.login_required]
-
+# Sample call: /get_field_between_time?field=temp&start=%222014-10-06_06:27:29%22&end=%222015-12-22_14:04:29%22
+# Sample call (pulling multiple fields): /get_field?field=s1&field=s2&start=%222014-10-06_06:27:29%22&end=%222015-12-22_14:04:29%22
+class GetFieldBetweenTime(Resource):
     def __init__(self):
         self.parser = reqparse.RequestParser()
         self.parser.add_argument('field', required=True, action='append')
         self.parser.add_argument('start', required=True)
         self.parser.add_argument('end', required=True)
-        self.parser.add_argument('table', required=True)
-        super(GetField, self).__init__()
+        super(GetFieldBetweenTime, self).__init__()
 
     def validate(self, args):
         fields_valid = validateFields (args['field'])
@@ -68,7 +57,49 @@ class GetField(Resource):
         if not valid[0]:
             abort(400, message=valid[1])
         # Form query using the received arguments
-        query = ("SELECT time, {} FROM {} where time BETWEEN {} and {}".format(",".join(args['field']), args['table'], args['start'], args['end']))
+        query = ("SELECT time, {} FROM {} where time BETWEEN {} and {}".format(",".join(args['field']), table, args['start'], args['end']))
+        # Print for debugging
+        print query
+
+        # Perform the query and store result
+        result = performQuery (query)
+        print result
+
+        return result
+
+
+# Arguments will be field: the name of the field to pull (specify field multiple times to pull multiple fields)
+# Start and end, the start and end values. Results will be in the form of
+# a list of all times and fields (in a dict) that fall between the start and end key
+# Keys and fields will be expressed as Strings
+# Sample call: /get_field_between_key?field=s1&field=s2&start=80&end=120&table=entry&key=temp
+# Sample call (pulling multiple fields): /get_field_between_key?field=s1&field=s2&field=s2&start=80&end=120&table=entry&key=temp
+class GetFieldBetweenKey(Resource):
+    def __init__(self):
+        self.parser = reqparse.RequestParser()
+        self.parser.add_argument('field', required=True, action='append')
+        self.parser.add_argument('start', required=True)
+        self.parser.add_argument('end', required=True)
+        self.parser.add_argument('key', required=True)
+        super(GetFieldBetweenKey, self).__init__()
+
+    def validate(self, args):
+        fields_valid = validateFields (args['field'])
+        key_valid = validateKey (args['key'])
+        message = ""
+        message += "" if fields_valid else "Invalid fields. "
+        message += "" if key_valid else "Invalid key. "
+        return (fields_valid and key_valid, message)
+
+    def get(self):
+        # Parse arguments
+        args = self.parser.parse_args()
+
+        valid = self.validate(args)
+        if not valid[0]:
+            abort(400, message=valid[1])
+        # Form query using the received arguments
+        query = ("SELECT {}, {} FROM {} where {} BETWEEN {} and {}".format(args['key'], ",".join(args['field']), table, args['key'], args['start'], args['end']))
         # Print for debugging
         print query
 
@@ -83,15 +114,12 @@ class GetField(Resource):
 # between the start and end date.
 # Example call: /get_average?field=temp&start=%222014-10-06_06:27:29%22&end=%222015-12-22_14:04:29%22
 class GetAvg(Resource):
-    decorators = [auth.login_required]
-
     def __init__(self):
         # Set up the RequestParser
         self.parser = reqparse.RequestParser()
         self.parser.add_argument('field', required=True, action='append')
         self.parser.add_argument('start', required=True)
         self.parser.add_argument('end', required=True)
-        self.parser.add_argument('table', required=True)
         super(GetAvg, self).__init__()
 
     def validate(self, args):
@@ -115,7 +143,7 @@ class GetAvg(Resource):
 
         # Form query using the received arguments, in this case putting field arguments in the AVG function
         fields = map (lambda s: "AVG({0}) as {0}".format(s), args['field'])
-        query = ("SELECT {} FROM {} where time BETWEEN {} and {}".format(",".join(fields), args['table'], args['start'], args['end']))
+        query = ("SELECT {} FROM {} where time BETWEEN {} and {}".format(",".join(fields), table, args['start'], args['end']))
         # Print for debugging
         print query
 
@@ -130,27 +158,35 @@ class GetAvg(Resource):
 
         return result
 
+
 #Authentication Functions, first hardcoded later DB interacted
+@auth.get_password
 def get_pw(username):
-        
-    userQry = performQueryRaw("SELECT password FROM userDB WHERE username='%s'" % username);
-    if not userQry :
-        return ""
-        
-    return userQry[0]["password"]
-		
- #flask function to verify pw.
-@auth.verify_password
-def verify_pw(username, password):
-    return check_pw(username, password)
+	#if username in users :
+	#	return users.get(username)
 
-#hashes a password for storage using SHA1 + salt
-def hashed_pw(password) :
-	return generate_password_hash(password)
+	userQry = performQueryRaw("SELECT password FROM userDB WHERE username='%s'" % username);
+	if not userQry :
+		return ""
 
-#user Werkzeug function to check unhashed password against hashed.
-def check_pw(username, password) :
-	return check_password_hash(get_pw(username), password)
+	return userQry[0]["password"]
+
+@app.route('/')
+@auth.login_required
+def index():
+	return "All Hail %s!" % (auth.username())
+
+#for hashing if/when deemed neccessary
+#@auth.hash_password
+#def hash_pw (username, password) :
+#	get_salt(username)
+#	return hash(password,salt)
+#
+#	OR
+#
+#@auth.verify_password
+#def verify_pw(username, password) :
+#	return ourVerificationFunction(usr,pw)
 
 def performQuery (query):
     """Perform query and convert results into JSONable objects
@@ -170,10 +206,10 @@ def performQuery (query):
             functs = {"TIMESTAMP": str, "INT": int, "DOUBLE":float, None: str}
             # Try to determine data type
             key_type = None
-            try: 
+            try:
                 key_type = config.get('fields', key).upper()
             except:
-                key_type = None 
+                key_type = None
             # Apply conversion function
             row[key] = (functs[key_type])(row[key])
 
@@ -215,6 +251,11 @@ def validateFields (fields):
             return False
     return True
 
+def validateKey (key):
+    if key.lower() not in [x.lower() for x in config.options("fields")]:
+        return False
+    return True
+
 def validateDates (dates):
     for d in dates:
         if d.startswith('"') and d.endswith('"'):
@@ -227,13 +268,10 @@ def validateDates (dates):
     return True
 
 ## Actually setup the Api resource routing here
-api.add_resource(Welcome, '/')
-
-api.add_resource(GetField, '/get_field')
+api.add_resource(GetFieldBetweenTime, '/get_field_between_time')
+api.add_resource(GetFieldBetweenKey, '/get_field_between_key')
 api.add_resource(GetAvg, '/get_average')
 
 
-
 if __name__ == '__main__':
-    application.run(debug=True)
-
+    app.run(host='0.0.0.0', debug=True)
