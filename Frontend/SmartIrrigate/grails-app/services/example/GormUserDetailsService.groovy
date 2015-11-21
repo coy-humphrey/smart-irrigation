@@ -13,7 +13,7 @@ class GormUserDetailsService implements UserDetailsService {
     @Transactional(readOnly = true, noRollbackFor = [IllegalArgumentException, UsernameNotFoundException])
     UserDetails loadUserByUsername(String username, boolean loadRoles) throws UsernameNotFoundException {
 
-        def user = User.findWhere(username: username)
+        User user = User.findByUsername(username)
         if (!user) {
             log.warn "User not found: $username"
             throw new UsernameNotFoundException('User not found')
@@ -37,8 +37,8 @@ class GormUserDetailsService implements UserDetailsService {
         return authorities ?: [NO_ROLE]
     }
 
-    protected UserDetails createUserDetails(user, Collection<GrantedAuthority> authorities) {
-        new GrailsUser(user.username, user.password, user.enabled, !user.accountExpired, !user.credentialsExpired,
-                !user.accountLocked, authorities, user.id)
+    protected MyUserDetails createUserDetails(User user, Collection<GrantedAuthority> authorities) {
+        new MyUserDetails(user.username, user.password, user.enabled, !user.accountExpired, !user.credentialsExpired,
+                !user.accountLocked, authorities, user.id, user.testing)
     }
 }

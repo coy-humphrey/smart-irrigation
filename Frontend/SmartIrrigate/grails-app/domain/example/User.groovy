@@ -3,13 +3,15 @@ package example
 //unnecessary if passwordEncoder is defined `def passwordEncoder`
 import org.springframework.security.crypto.password.PasswordEncoder
 
-class User {
+class User{
 
     //This could be defined as `def passwordEncoder` as well and the import would be unnecessary
     PasswordEncoder passwordEncoder
 
     String username
     String password
+    String testing
+    // Field DatabaseTable // Used to refference table from backend
     boolean enabled = true
     boolean accountExpired
     boolean accountLocked
