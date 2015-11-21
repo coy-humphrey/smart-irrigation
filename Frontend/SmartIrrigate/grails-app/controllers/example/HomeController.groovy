@@ -4,6 +4,9 @@ import grails.converters.JSON
 import org.grails.web.json.JSONArray
 import org.grails.web.json.JSONObject
 
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+
 class HomeController {
 
     static MyUserDetails CurrentUser;
@@ -11,8 +14,7 @@ class HomeController {
 
     def index() {
         GetUserData()
-        //CurrentUser = User.findByUsername("ian")
-        //render CurrentUser.username
+        [Data: UserData]
     }
 
     private void GetUserData(){
@@ -31,14 +33,22 @@ class HomeController {
             fields[i] = "s" + (i+1)
         }
 
-        // Calculate dates needed for DB lookup
-        // <STUB>
-        def date1 = "2014-10-06_06:27:29"
-        def date2 = "2015-12-22_14:04:29"
+        // Calculate dates needed for DB lookup (1 year maximum)
+        // Use format for start and end %Y-%m-%d_%H:%M:%S
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss")
+        Calendar cal = Calendar.getInstance()
+        def end = dateFormat.format(cal.getTime())
+        println end
+        cal.add(Calendar.YEAR, -2)
+        def start = dateFormat.format(cal.getTime())
+        println start
+
+        //def start = "2014-10-06_06:27:29"
+       //def end = "2015-12-22_14:04:29"
 
 
        //Call DataWithRange to query for sensor data in the given range
-        UserData = DatabaseClient.DataWithDateRange(date1, date2, fields)
-
+        UserData = DatabaseClient.DataWithDateRange(start, end, fields)
+        println UserData
     }
 }

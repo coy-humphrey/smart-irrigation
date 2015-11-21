@@ -31,13 +31,11 @@
                             Summary
                         </div>
                         <div class="summary-content">
-                            Information <br>
-                            from <br>
-                            backend <br>
-                            database <br>
-                            will <br>
-                            go <br>
-                            here <br>
+                            <g:set var="x" value="${Data}"/>
+                            ${x}
+                            <script type="text/javascript">
+
+                            </script>
                         </div>
                     </div>
                 </div>
