@@ -2,6 +2,66 @@
 <html>
     <head>
         <title></title>
+        <g:set var="x" value="${Data}"/>
+        <!-- Load Google Charts API and fill with data from HomeController -->
+        <script type="text/javascript"
+                src="https://www.google.com/jsapi?autoload={
+            'modules':[{
+              'name':'visualization',
+              'version':'1',
+              'packages':['corechart']
+            }]
+          }"></script>
+        ​
+        <script type="text/javascript">
+            google.setOnLoadCallback(drawChart);
+            function drawChart() {
+                <%
+                def day = [];
+                def month = [];
+                def year = [];
+
+                def s1 = [];
+                def s2 = [];
+                def s3 = [];
+                for(int i = 0; i < x.length(); i++){
+                StringTokenizer s = new StringTokenizer(x[i].getAt("time").toString(), '-')
+                    year[i] = s.nextToken()
+                    month[i] = s.nextToken()
+                    day[i] = s.nextToken().substring(0,2)
+
+                    s1[i] = x[i].getAt("s1")
+                    s2[i] = x[i].getAt("s2")
+                    s3[i] = x[i].getAt("s3")
+                } %>
+
+                var arr = [];
+                var day = ${day};
+                var month = ${month};
+                var year = ${year};
+
+                var s1 = ${s1};
+                var s2 = ${s2};
+                var s3 = ${s3};
+
+                arr[0] = ['Year', 'S1', 'S2', 'S3'];
+                for(var i = 1; i < ${x.length()}; i++){
+                    arr[i] = ["" + year[i] + "-" + month[i] + "-" + day[i], s1[i], s2[i], s3[i]];
+                    console.log(arr[i]);
+                }
+                console.log(arr);
+
+
+                var data = google.visualization.arrayToDataTable(arr);
+        var options = {
+            title: 'Sensor information',
+            curveType: 'function',
+            legend: { position: 'bottom' }
+        };
+        var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+        chart.draw(data, options);
+            }
+        </script>
     </head>
 
 
@@ -29,16 +89,15 @@
                     <div class="summary-box">
                         <div class="summary-title">
                             Summary
+                            ${x[0].getAt("time")}
                         </div>
                         <div class="summary-content">
-                            <g:set var="x" value="${Data}"/>
-                            ${x}
                             <script type="text/javascript">
-
                             </script>
                         </div>
                     </div>
                 </div>
+                <div id="curve_chart" style="width: 900px; height: 500px"></div>
                 <div class="weather-wrapper">
                     <div class="weather-forecast">
                         <!--Thanks to http://blog.forecast.io/forecast-embeds/ -->

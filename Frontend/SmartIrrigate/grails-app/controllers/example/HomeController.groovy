@@ -28,27 +28,24 @@ class HomeController {
         //</STUB>
 
        // Generate fields array
-        def fields = new String[numSensors]
-        for(int i = 0; i < numSensors; i++) {
+        def fields = new String[numSensors + 1]
+        int i;
+        for(i = 0; i < numSensors; i++) {
             fields[i] = "s" + (i+1)
         }
 
+        fields[i] = "temp"
         // Calculate dates needed for DB lookup (1 year maximum)
         // Use format for start and end %Y-%m-%d_%H:%M:%S
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss")
         Calendar cal = Calendar.getInstance()
+        cal.add(Calendar.MONTH, 6)
         def end = dateFormat.format(cal.getTime())
-        println end
-        cal.add(Calendar.YEAR, -2)
+        cal.add(Calendar.MONTH, -6)
         def start = dateFormat.format(cal.getTime())
-        println start
-
-        //def start = "2014-10-06_06:27:29"
-       //def end = "2015-12-22_14:04:29"
 
 
        //Call DataWithRange to query for sensor data in the given range
         UserData = DatabaseClient.DataWithDateRange(start, end, fields)
-        println UserData
     }
 }
