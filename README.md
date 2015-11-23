@@ -194,3 +194,21 @@ Example result:
             "temp": 83
         }
     ]
+
+### post_watering
+
+Given a start date, a duration in minutes, a gallons per minute rating, and the name of a table (corresponding to a garden), this function will enter the date, duration and gallons per minute rating into a database and link this entry with readings from the given table. For debugging purposes it may return a JSON object containing the entries from the given table that fall into the range of the watering session, but this is not guaranteed.
+
+Arguments
+* start      : The start time. Format: `\"%Y-%m-%d_%H:%M:%S\"`
+* duration   : The length of the watering session in minutes. Example: `60`
+* gal_per_min: The gallons per minute rating of the garden. Example: `10.0`
+* table      : The table to pull from.
+
+Example call:
+
+    /post_watering?start=%222015-10-06_06:27:29%22&duration=60&table=entry&gal_per_min=10.0
+
+This will specify a start date of 2015-10-06_06:27:29, a duration of 60 minutes, a gallons per minute rating of 10, and the resulting database entry will be linked to entries in the table named entry.
+
+No example result is given because the function is not guaranteed to return a result.
