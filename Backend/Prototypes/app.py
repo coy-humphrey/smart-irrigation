@@ -169,6 +169,43 @@ class GetAvg(Resource):
 
         return result
 
+class PostWatering(Resource):
+    decorators = [auth.login_required]
+
+    def __init__(self):
+        # Set up the RequestParser
+        self.parser = reqparse.RequestParser()
+        self.parser.add_argument('start', required=True)
+        self.parser.add_argument('duration', type=int, required=True)
+        self.parser.add_argument('gal_per_min', type=float, required=True)
+        self.parser.add_argument('table', required=True)
+        super(PostWatering, self).__init__()
+
+    def post(self):
+        args = self.parser.parse_args()
+
+        #TODO: Validation
+        d = args['start']
+
+        if d.startswith('"') and d.endswith('"'):
+            d = d[1:-1]
+
+        start = datetime.datetime.strptime(d, '%Y-%m-%d_%H:%M:%S')
+        entry_dict = {"start": start.strftime('"%Y-%m-%d %H:%M:%S"'), "duration_minutes": args['duration'], "gal_per_minute": args['gal_per_min']}
+
+        add_entry = ("INSERT INTO watering_entries "
+                    "(start, duration_minutes, gal_per_minute) "
+                    "VALUES (%(start)s, %(duration_minutes)s, %(gal_per_minute)s)") % entry_dict
+
+        commitQuery (add_entry)
+
+        end = start + datetime.timedelta(minutes=args['duration'])
+
+        query = ("SELECT * FROM {} where time BETWEEN {} and {}".format(args['table'], start.strftime('"%Y-%m-%d %H:%M:%S"'), end.strftime('"%Y-%m-%d %H:%M:%S"')))
+        return performQuery(query)
+
+
+
 #Authentication Functions, first hardcoded later DB interacted
 def get_pw(username):
         
@@ -244,6 +281,16 @@ def performQueryRaw (query):
     conn.close( )
     return results
 
+def commitQuery (query):
+    # Connect to db
+    conn = MySQLdb.connect(**sql_config)
+    cursor = conn.cursor()
+    # Perform query and fetch results
+    cursor.execute(query)
+    conn.commit()
+    cursor.close()
+    conn.close()
+
 def validateFields (fields):
     for field in fields:
         if field.lower() not in [x.lower() for x in config.options("fields")]:
@@ -272,6 +319,7 @@ api.add_resource(Welcome, '/')
 api.add_resource(GetFieldBetweenTime, '/get_field', '/get_field_between_time')
 api.add_resource(GetAvg, '/get_average')
 api.add_resource(GetFieldBetweenKey, '/get_field_between_key')
+api.add_resource(PostWatering, '/post_watering')
 
 
 
