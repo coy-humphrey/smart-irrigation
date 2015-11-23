@@ -7,12 +7,13 @@ import org.grails.web.json.JSONObject
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 
-class HomeController {
+class IndexController {
 
     static MyUserDetails CurrentUser;
     static JSONArray UserData;
 
     def index() {
+        // Get and return userdata for currently logged in user.
         GetUserData()
         [Data: UserData]
     }
@@ -27,21 +28,21 @@ class HomeController {
         int numSensors = 3
         //</STUB>
 
-       // Generate fields array
+       // Generate wanted fields array
         def fields = new String[numSensors + 1]
         int i;
         for(i = 0; i < numSensors; i++) {
             fields[i] = "s" + (i+1)
         }
-
         fields[i] = "temp"
+
         // Calculate dates needed for DB lookup (1 year maximum)
         // Use format for start and end %Y-%m-%d_%H:%M:%S
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss")
         Calendar cal = Calendar.getInstance()
-        cal.add(Calendar.MONTH, 6)
+        cal.add(Calendar.MONTH, 2)
         def end = dateFormat.format(cal.getTime())
-        cal.add(Calendar.MONTH, -6)
+        cal.add(Calendar.MONTH, -2)
         def start = dateFormat.format(cal.getTime())
 
 
