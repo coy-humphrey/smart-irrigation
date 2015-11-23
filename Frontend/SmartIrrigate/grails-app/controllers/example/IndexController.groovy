@@ -13,13 +13,7 @@ class IndexController {
     static JSONArray UserData;
 
     def index() {
-<<<<<<< HEAD:Frontend/SmartIrrigate/grails-app/controllers/example/HomeController.groovy
-<<<<<<< HEAD
-        render "hello world!"
-=======
-=======
         // Get and return userdata for currently logged in user.
->>>>>>> 853ce3ebe011d9e1f790c322c7e709869f544e32:Frontend/SmartIrrigate/grails-app/controllers/example/IndexController.groovy
         GetUserData()
         [Data: UserData]
     }
@@ -54,10 +48,7 @@ class IndexController {
 
        //Call DataWithRange to query for sensor data in the given range
         UserData = DatabaseClient.DataWithDateRange(start, end, fields)
-<<<<<<< HEAD:Frontend/SmartIrrigate/grails-app/controllers/example/HomeController.groovy
         println UserData
->>>>>>> f9607ce71ee7ccb692591692c818ca6e7794b665
-=======
->>>>>>> 853ce3ebe011d9e1f790c322c7e709869f544e32:Frontend/SmartIrrigate/grails-app/controllers/example/IndexController.groovy
+
     }
 }
