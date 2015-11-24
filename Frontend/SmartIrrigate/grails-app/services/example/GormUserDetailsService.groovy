@@ -39,6 +39,6 @@ class GormUserDetailsService implements UserDetailsService {
 
     protected MyUserDetails createUserDetails(User user, Collection<GrantedAuthority> authorities) {
         new MyUserDetails(user.username, user.password, user.enabled, !user.accountExpired, !user.credentialsExpired,
-                !user.accountLocked, authorities, user.id, user.testing)
+                !user.accountLocked, authorities, user.id, user.dbtable)
     }
 }

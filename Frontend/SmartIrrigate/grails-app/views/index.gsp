@@ -169,7 +169,8 @@
 
     <asset:stylesheet src="home.css" />
     <body>
-
+<form name="logout" method="POST" action="/logout">
+    <input type="submit" value="logout"></form>
         <!--content is a wrapper for the whole page  -->
         <div class="content">
             <!--UCSC logo and smart irrigation title -->

@@ -29,7 +29,7 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .and()
             .logout()
-                //.logoutUrl("/logout")
+                .logoutUrl("/logout")
                 .permitAll()
 
         // Added *ONLY* to display the dbConsole.

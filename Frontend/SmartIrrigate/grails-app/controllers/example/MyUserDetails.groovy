@@ -8,17 +8,16 @@ import org.springframework.security.core.userdetails.User
  */
 public class MyUserDetails extends GrailsUser {
 
-    final String dbTableNumber
-
+    final String dbTable
 
     MyUserDetails(String username, String password, boolean enabled,
                   boolean accountNonExpired, boolean credentialsNonExpired,
                   boolean accountNonLocked,
                   Collection<GrantedAuthority> authorities,
-                  long id, String dbTableNumber) {
+                  long id, String dbTable) {
         super(username, password, enabled, accountNonExpired,
                 credentialsNonExpired, accountNonLocked, authorities, id)
 
-        this.dbTableNumber = dbTableNumber
+        this.dbTable = dbTable
     }
 }

@@ -10,6 +10,7 @@ import org.grails.web.json.JSONObject
  */
 class DatabaseClient {
 
+    // HTTP address for the database hosted by
     final static String DATABASE_ROOT = "http://smart-irrigation.elasticbeanstalk.com"
 
     // Example request:
@@ -17,7 +18,7 @@ class DatabaseClient {
 
 
     // Constructs request for getting sensor data from database through PythonAPI query
-    static JSONArray DataWithDateRange(String date1, String date2, String[] fields){
+    static JSONArray DataWithDateRange(String date1, String date2, String[] fields, String dbTable){
         String field = "";
         Iterator<String> it = fields.iterator()
         while(it.hasNext()){
@@ -26,7 +27,8 @@ class DatabaseClient {
                 field += "&"
             }
         }
-        def request = "/get_field?" + field + "&start=%22" + date1 + "%22&end=%22" + date2 + "%22&table=entry"
+        def request = "/get_field?" + field + "&start=%22" + date1 + "%22&end=%22" + date2 + "%22&table="+ dbTable
+
         GetData(request);
         //http://whatevertheaddressis/get_field?field=s1&field=s2&start=%222014-10-06_06:27:29%22&end=%222015-12-22_14:04:29%22&table=entry
     }
@@ -35,9 +37,7 @@ class DatabaseClient {
     // Queries the PythonAPI for database access given the request string.
     static JSONArray GetData(String request) {
         try {
-            //println DATABASE_ROOT
             String webPage = DATABASE_ROOT + request;
-            //println webPage
             String name = "bob";
             String password = "secret";
 
