@@ -48,5 +48,7 @@ class IndexController {
 
        //Call DataWithRange to query for sensor data in the given range
         UserData = DatabaseClient.DataWithDateRange(start, end, fields)
+        println UserData
+
     }
 }
