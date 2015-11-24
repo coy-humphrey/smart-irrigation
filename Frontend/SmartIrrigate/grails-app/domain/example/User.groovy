@@ -10,7 +10,7 @@ class User{
 
     String username
     String password
-    String testing
+    String dbtable
     // Field DatabaseTable // Used to refference table from backend
     boolean enabled = true
     boolean accountExpired

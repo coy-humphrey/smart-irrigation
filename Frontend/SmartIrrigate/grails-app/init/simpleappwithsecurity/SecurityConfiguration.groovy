@@ -21,7 +21,7 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .authorizeRequests()
                 .antMatchers('/admin/**').hasAnyRole('ADMIN')
                 .antMatchers('/home/**').hasAnyRole('USER', 'ADMIN')
-                .antMatchers('/').permitAll()
+                .antMatchers('/').hasAnyRole('USER', 'ADMIN')
                 //.permitAll()
                 .and()
             .formLogin()
@@ -29,7 +29,7 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .and()
             .logout()
-                //.logoutUrl("/logout")
+                .logoutUrl("/logout")
                 .permitAll()
 
         // Added *ONLY* to display the dbConsole.
@@ -54,8 +54,6 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Autowired
     protected void globalConfigure(AuthenticationManagerBuilder auth) throws Exception {
         auth
-            //.inMemoryAuthentication()
-            //.withUser("user").password("pwd").roles("ADMIN");
             .userDetailsService(userDetailsService)
                 .passwordEncoder(passwordEncoder)
     }
