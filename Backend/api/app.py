@@ -83,6 +83,7 @@ class GetFieldBetweenTime(Resource):
 # Sample call: /get_field_between_key?field=s1&field=s2&start=80&end=120&table=entry&key=temp
 # Sample call (pulling multiple fields): /get_field_between_key?field=s1&field=s2&field=s2&start=80&end=120&table=entry&key=temp
 class GetFieldBetweenKey(Resource):
+    decorators = [auth.login_required]
     def __init__(self):
         self.parser = reqparse.RequestParser()
         self.parser.add_argument('field', required=True, action='append')
