@@ -148,7 +148,7 @@ def initConfig ( ) :
     }
     
     activeTable = config.get('MySQL', 'table')
-    rowFormat = config.options('fields')
+    colFormat = config.options('fields')
 
 #connectDB will use the initialized sql_config data to connect to the database and 
 #initialize the cursor and context variables.

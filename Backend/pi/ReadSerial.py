@@ -9,6 +9,12 @@ import select
 import sqlLib
 
 def get_devices():
+    ''' Reads from serial_devices.ini and returns a dictionary of devices to read from.
+
+    Return value:
+    A dictionary with devices as keys, and dictionaries containing a list of fields and a table as values.
+
+    '''
     # Config file lists all devices to read from as well as the sensor readings to expect
     config = ConfigParser.RawConfigParser( )
     config.read( 'serial_devices.ini' )
@@ -24,17 +30,34 @@ def get_devices():
 
         # Result is dictionary
         # Handle supporting readline() as key
-        # Value is a tuple containing a list of fields and a table name
-        results[stream] = ([x.strip() for x in config.get('format', device).split(',')], config.get('table', device))
+        # Value is a dict containing a list of fields and a table name
+        results[stream] = {    "fields": [x.strip() for x in config.get('format', device).split(',')],
+                               "table" : config.get('table', device) }
     return results
 
 def pushSql (results, table=None, col_format=None):
+    ''' Uses sqlLib to push a new database entry to the specified table.
+
+    Arguments:
+    results   : A dict with database columns as keys, and values for those columns as values.
+    table     : (Optional) specifies the database table to push to. Defaults to sqlLib default.
+    col_format: (Optional) A list of database column names. Defaults to sqlLib default.
+
+    '''
     sqlLib.initConfig()
     sqlLib.connectDB()
     sqlLib.pushData(results, table, col_format)
     sqlLib.closeDB()
 
-def parseLine (device, device_dict):
+def parseLine (device, col_format, table):
+    ''' Parses a line from the given device and pushes it to the database
+
+    Arguments:
+    device    : The device to read from. It must support readline()
+    col_format: A list containing the names of the columns in the order they will be read in.
+    table     : The table to push the received data to.
+
+    '''
     line = device.readline()
     # In future iterations, this should cause some sort of error message and possibly an attempt to reconnect.
     if not line: 
@@ -45,16 +68,19 @@ def parseLine (device, device_dict):
     # We pull the sensor readings from the input and throw them in a list with time
     results = [curr_time] + line.strip().split('\t')
     # We get the row names of the sensors and append them to "time" the name of the time row
-    fields = ["time"] + device_dict[device][0]
+    fields = ["time"] + col_format
     # Then we put the readings in a dictionary with the row names as keys
     results = dict(zip(fields, results))
-    # Push results to DB to table specified in device_dict tuple
-    pushSql (results, device_dict[device][1], fields)
+    # Push results to DB to the table specified by table
+    pushSql (results, table, fields)
     # Returning true tells the calling function that this stream is still open
     return True
 
 def main():
-    # Get dictionary with devices as keys and field names of sensor readings as values
+    ''' Gets a dictionary of devices from serial_config.ini, then repeatedly reads from the devices and uploads to MySQL server.
+
+    '''
+    # Get dictionary with devices as keys and a dictionary containing field names and a table name as values
     device_dict = get_devices()
     # Get list of devices for select to monitor
     devices = device_dict.keys()
@@ -64,7 +90,8 @@ def main():
         # Wait for a device to have data ready
         readable, _, _ = select.select(devices, [], [])
         # Then, parse a line from each ready device. If a device is closed, remove it from list
-        devices = [x for x in readable if parseLine(x, device_dict)]
+        # Pass into parseLine the list of fields and the table name found in device_dict
+        devices = [x for x in readable if parseLine(x, device_dict[x]["fields"], device_dict[x]["table"])]
 
 
 if __name__ == '__main__':
