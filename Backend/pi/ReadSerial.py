@@ -9,6 +9,12 @@ import select
 import sqlLib
 
 def get_devices():
+    ''' Reads from serial_devices.ini and returns a dictionary of devices to read from.
+
+    Return value:
+    A dictionary with devices as keys, and dictionaries containing a list of fields and a table as values.
+
+    '''
     # Config file lists all devices to read from as well as the sensor readings to expect
     config = ConfigParser.RawConfigParser( )
     config.read( 'serial_devices.ini' )
@@ -30,13 +36,26 @@ def get_devices():
     return results
 
 def pushSql (results, table=None, col_format=None):
+    ''' Uses sqlLib to push a new database entry to the specified table.
+
+    Arguments:
+    results   : A dict with database columns as keys, and values for those columns as values.
+    table     : (Optional) specifies the database table to push to. Defaults to sqlLib default.
+    col_format: (Optional) A list of database column names. Defaults to sqlLib default.
+
+    '''
     sqlLib.initConfig()
     sqlLib.connectDB()
     sqlLib.pushData(results, table, col_format)
     sqlLib.closeDB()
 
 def parseLine (device, col_format, table):
-    ''' Parses a line from the given device and 
+    ''' Parses a line from the given device and pushes it to the database
+
+    Arguments:
+    device    : The device to read from. It must support readline()
+    col_format: A list containing the names of the columns in the order they will be read in.
+    table     : The table to push the received data to.
 
     '''
     line = device.readline()
@@ -58,6 +77,9 @@ def parseLine (device, col_format, table):
     return True
 
 def main():
+    ''' Gets a dictionary of devices from serial_config.ini, then repeatedly reads from the devices and uploads to MySQL server.
+
+    '''
     # Get dictionary with devices as keys and a dictionary containing field names and a table name as values
     device_dict = get_devices()
     # Get list of devices for select to monitor
