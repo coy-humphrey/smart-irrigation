@@ -72,7 +72,7 @@ def parseLine (device, col_format, table):
     # Then we put the readings in a dictionary with the row names as keys
     results = dict(zip(fields, results))
     # Push results to DB to the table specified by table
-    pushSql (results, table, fields)
+    pushSql (results, table=table, col_format=fields)
     # Returning true tells the calling function that this stream is still open
     return True
 
