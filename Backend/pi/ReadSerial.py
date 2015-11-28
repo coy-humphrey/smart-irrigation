@@ -6,6 +6,7 @@ import datetime
 import ConfigParser
 import sys
 import select
+import sqlLib
 
 def get_devices():
     # Config file lists all devices to read from as well as the sensor readings to expect
@@ -27,6 +28,12 @@ def get_devices():
         results[stream] = [x.strip() for x in config.get('format', device).split(',')]
     return results
 
+def pushSql (results, table=None, col_format=None):
+    sqlLib.initConfig()
+    sqlLib.connectDB()
+    sqlLib.pushData(results, table, col_format)
+    sqlLib.closeDB()
+
 def parseLine (device, device_dict):
     line = device.readline()
     # In future iterations, this should cause some sort of error message and possibly an attempt to reconnect.
@@ -34,15 +41,15 @@ def parseLine (device, device_dict):
         return False
     # Devices give a tab separated list of sensor readings not including time
     # So we generate the time
-    curr_time = datetime.datetime.today().strftime('%Y-%m-%d %H:%M:%S')
+    curr_time = datetime.datetime.today().strftime('"%Y-%m-%d %H:%M:%S"')
     # We pull the sensor readings from the input and throw them in a list with time
     results = [curr_time] + line.strip().split('\t')
     # We get the row names of the sensors and append them to "time" the name of the time row
     fields = ["time"] + device_dict[device]
     # Then we put the readings in a dictionary with the row names as keys
     results = dict(zip(fields, results))
-    # For now we print the dictionary, in the future we will push it to DB
-    print results
+    # Push results to DB. For now hardcode "entry1" as table.
+    pushSql (results, "entry1", fields)
     # Returning true tells the calling function that this stream is still open
     return True
 
