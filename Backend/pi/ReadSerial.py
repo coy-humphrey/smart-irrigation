@@ -24,8 +24,8 @@ def get_devices():
 
         # Result is dictionary
         # Handle supporting readline() as key
-        # list of field names of sensor readings as value
-        results[stream] = [x.strip() for x in config.get('format', device).split(',')]
+        # Value is a tuple containing a list of fields and a table name
+        results[stream] = ([x.strip() for x in config.get('format', device).split(',')], config.get('table', device))
     return results
 
 def pushSql (results, table=None, col_format=None):
@@ -45,11 +45,11 @@ def parseLine (device, device_dict):
     # We pull the sensor readings from the input and throw them in a list with time
     results = [curr_time] + line.strip().split('\t')
     # We get the row names of the sensors and append them to "time" the name of the time row
-    fields = ["time"] + device_dict[device]
+    fields = ["time"] + device_dict[device][0]
     # Then we put the readings in a dictionary with the row names as keys
     results = dict(zip(fields, results))
     # Push results to DB. For now hardcode "entry1" as table.
-    pushSql (results, "entry1", fields)
+    pushSql (results, device_dict[device][1], fields)
     # Returning true tells the calling function that this stream is still open
     return True
 
