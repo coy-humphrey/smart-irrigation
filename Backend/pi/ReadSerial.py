@@ -24,8 +24,9 @@ def get_devices():
 
         # Result is dictionary
         # Handle supporting readline() as key
-        # Value is a tuple containing a list of fields and a table name
-        results[stream] = ([x.strip() for x in config.get('format', device).split(',')], config.get('table', device))
+        # Value is a dict containing a list of fields and a table name
+        results[stream] = {    "fields": [x.strip() for x in config.get('format', device).split(',')],
+                               "table" : config.get('table', device) }
     return results
 
 def pushSql (results, table=None, col_format=None):
@@ -34,7 +35,10 @@ def pushSql (results, table=None, col_format=None):
     sqlLib.pushData(results, table, col_format)
     sqlLib.closeDB()
 
-def parseLine (device, device_dict):
+def parseLine (device, col_format, table):
+    ''' Parses a line from the given device and 
+
+    '''
     line = device.readline()
     # In future iterations, this should cause some sort of error message and possibly an attempt to reconnect.
     if not line: 
@@ -45,16 +49,16 @@ def parseLine (device, device_dict):
     # We pull the sensor readings from the input and throw them in a list with time
     results = [curr_time] + line.strip().split('\t')
     # We get the row names of the sensors and append them to "time" the name of the time row
-    fields = ["time"] + device_dict[device][0]
+    fields = ["time"] + col_format
     # Then we put the readings in a dictionary with the row names as keys
     results = dict(zip(fields, results))
-    # Push results to DB to table specified in device_dict tuple
-    pushSql (results, device_dict[device][1], fields)
+    # Push results to DB to the table specified by table
+    pushSql (results, table, fields)
     # Returning true tells the calling function that this stream is still open
     return True
 
 def main():
-    # Get dictionary with devices as keys and field names of sensor readings as values
+    # Get dictionary with devices as keys and a dictionary containing field names and a table name as values
     device_dict = get_devices()
     # Get list of devices for select to monitor
     devices = device_dict.keys()
@@ -64,7 +68,8 @@ def main():
         # Wait for a device to have data ready
         readable, _, _ = select.select(devices, [], [])
         # Then, parse a line from each ready device. If a device is closed, remove it from list
-        devices = [x for x in readable if parseLine(x, device_dict)]
+        # Pass into parseLine the list of fields and the table name found in device_dict
+        devices = [x for x in readable if parseLine(x, device_dict[x]["fields"], device_dict[x]["table"])]
 
 
 if __name__ == '__main__':
