@@ -48,7 +48,7 @@ def parseLine (device, device_dict):
     fields = ["time"] + device_dict[device][0]
     # Then we put the readings in a dictionary with the row names as keys
     results = dict(zip(fields, results))
-    # Push results to DB. For now hardcode "entry1" as table.
+    # Push results to DB to table specified in device_dict tuple
     pushSql (results, device_dict[device][1], fields)
     # Returning true tells the calling function that this stream is still open
     return True
