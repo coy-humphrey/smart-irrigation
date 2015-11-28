@@ -120,6 +120,13 @@
                             Some summary content here
                             Some summary content here
                             Some summary content here
+                            <br>
+                            <br>
+                            <a class="button" href="#popup1">Moisture Readings</a>
+                            <br>
+                            <br>
+                            <br>
+                            <a class="button" href="#popup2">Soil Temp Readings</a>
                         </div>
                     </div>
                 </div>
@@ -209,19 +216,33 @@
                                 src="http://forecast.io/embed/#lat=36.954871&lon=-122.048429&name=Natural Bridges High"> </iframe>
                     </div>
                 </div>
-                <div class="graphs">
-                    <article class="tabs">
-
-                        <section id="tab1">
-                            <h2><a href="#tab1">Water Usage</a></h2>
-                            <p><div id="waterTime_chart" style="width: 900px; height: 500px"></div></p>
-                        </section>
-
-                        <section id="tab2">
-                            <h2><a href="#tab2">Crop Temperature</a></h2>
-                            <p><div id="tempTime_chart" style="width: 900px; height: 500px"></div></p>
-                        </section>
-                    </article>
+                <div id="popup1" class="overlay">
+                    <div class="popup">
+                        <h2>Soil Moisture Content Readings</h2>
+                        <a class="close" href="#">×</a>
+                        <div class="content">
+                            <div class="graphs">
+                                <article class="tabs">
+                                        <h2><a href="#tab1"></a></h2>
+                                        <p><div id="waterTime_chart" style="width: 900px; height: 500px"></div></p>
+                                </article>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="popup2" class="overlay">
+                    <div class="popup">
+                        <h2>Soil Temperature Readings</h2>
+                        <a class="close" href="#">×</a>
+                        <div class="content">
+                            <div class="graphs">
+                                <article class="tabs">
+                                    <h2><a href="#tab2"></a></h2>
+                                    <p><div id="tempTime_chart" style="width: 900px; height: 500px"></div></p>
+                                </article>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
