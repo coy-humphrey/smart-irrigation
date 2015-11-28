@@ -1,7 +1,7 @@
 html{
     box-sizing: border-box;
     min-height: 100% !important;
-    min-width: 1020px;
+    min-width: 1260px;
     background-color: #F5F4EB;
 }
 
@@ -13,16 +13,40 @@ html{
     box-sizing: inherit;
     overflow: hidden;
     float: left;
+    padding-left: 3%;
     width: 100%;
     font-weight: bold;
 }
 
 .site-header{
-    margin-top: 50px;
+    margin-top: 20px;
     box-sizing: inherit;
     overflow: hidden;
     height: 20%;
     width: 95%;
+}
+
+
+.animation-banner{
+    text-align: center;
+    padding-left: 5%;
+    padding-right: auto;
+    width: 100%;
+    margin-top: 20px;
+    height: 80%;
+}
+
+.logout-btn{
+    float: right;
+    padding-bottom: 5%;
+    padding-right: 5%;
+}
+
+.graphs{
+    float: left;
+    box-sizing: inherit;
+    padding-left: 10%;
+    text-align: center;
 }
 
 .content{
@@ -74,13 +98,13 @@ html{
 
 .home-content{
     box-sizing: inherit;
-    padding-top: 100px;
+    padding-top: 50px;
     overflow: hidden;
     padding-bottom: 100px;
-    margin: 0 8%;
+    //margin: 0 8%;
     height: 100%;
     min-width: 900px;
-    width: 80%;
+    width: 95%;
 
 }
 
@@ -88,11 +112,11 @@ html{
     position: relative;
     padding-left: 43%;
     float: right;
-    padding-top: 3%;
-    padding-right: 7%;
+    padding-right: 2%;
     box-sizing: inherit;
     display: block;
     margin-right: 0;
+    margin-top: 90px;
     min-width: 400px !important;
 
 
@@ -104,19 +128,22 @@ html{
     border-bottom: solid 1px #d3d2d1;
     box-shadow: 1px 1px 4px rgba(0,0,0,0.05);
     display: block;
+    overflow: hidden;
+    float: right;
 
 
 }
 
 .summary-wrapper{
-    position: relative;
-    padding-left: 5%;
-    height: 10%;
+    position: absolute;
+    padding-left: 8.5%;
+    height: 20%;
     box-sizing: inherit;
     width: 30%;
     min-width: 300px;
     overflow: hidden;
-    display: block;
+    margin-top: 90px;
+
 }
 
 .summary-box{
