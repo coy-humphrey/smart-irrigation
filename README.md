@@ -75,6 +75,46 @@ Note: SqlConnect.py is a quick and dirty test script and will be replaced (along
 
 To confirm that SqlConnect.py was successful, run SqlPull.py and make sure the results allign with the test data in test_input.
 
+## Setting up the API
+
+### Installation
+
+First, set up an account with Amazon Web Services. This will allow you managerial access to your Elastic Beantalk application. Once your account is set up, you will need to create an AWS Access Key ID and an AWS Secret Key. These will be needed when creating your application environment. 
+
+Once set up, intstall the AWS Elastic Beantalk Command Line Interface to your machine:
+	
+	pip install awsebcli
+
+After the installation completes, navigate to the api folder of the project and set up your application:
+
+	cd smart-irrigation/Backend/api  
+ 	eb init
+
+This will create a setup prompt with several options:
+
+	- Region - Allows you to pick the regional endpoint for requests. Select region which applies to your location.
+	- Application Name - Choose the name of your Elastic Beantalk application.
+	- Python version - The prompt should automatically detect you are using python. Once confirmed, it will allow you to select your version. Select Python 2.7.
+	- SSH Key - You can use an ssh key to connect to your AWS EC2 instance. This is optional and up to your discretion. If you choose yes, you must set up an ssh key. Info can be found in the link below.
+
+If you run into any issues, here is a reference to the AWS Documentation:
+[http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-connect-to-instance-linux.html#using-ssh-client](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-connect-to-instance-linux.html#using-ssh-client)
+
+### Create Application Environment
+
+Once you have setup your Elastic Beanstalk Application, the next step is to create an application environment.
+
+	eb create
+
+This will prompt you to create
+	- Environment name
+	- DNS CNAME Prefix
+
+The environment name is at your discretion. For the DNS cname, whatever you choose is specifies yor domain name. If you choose 'smart-irrigation', the api address will be smart-irrigation.elasticbeanstalk.com
+
+The setup will take some time, about 5 - 10 minutes. After this it is deployed and functional.
+
+
 ## Using the API
 
 ### get_field_between_time
