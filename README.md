@@ -138,6 +138,7 @@ This will create a setup prompt with several options:
 If you run into any issues, here is a reference to the AWS Documentation:
 
 [Configure the EB CLI](http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/eb-cli3-configuration.html)
+
 [Getting Security Credentials](http://docs.aws.amazon.com/general/latest/gr/getting-aws-sec-creds.html)
 
 ### Create Application Environment
