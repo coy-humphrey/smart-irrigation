@@ -112,7 +112,7 @@ class Test :
 		print "Observed Error : "
 		print error.output+"\n" if hasattr(error, "output") else "Test File Not Found or output not supplied\n"
 		print "Return Code : "
-		print error.returncode+"\n" if hasattr(error, "returncode") else "Not Supplied\n"
+		print str(error.returncode)+"\n" if hasattr(error, "returncode") else "Not Supplied\n"
 		print "Failure occurred during " + stage +"\n--------------------------------\n"
 		self.hasFailed = True
 		
