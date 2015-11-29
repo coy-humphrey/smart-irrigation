@@ -130,14 +130,14 @@ After the installation completes, navigate to the api folder of the project and 
 
 This will create a setup prompt with several options:
 
-	- Region - Allows you to pick the regional endpoint for requests. Select region which applies to your location.
-	- Application Name - Choose the name of your Elastic Beantalk application.
-	- Python version - The prompt should automatically detect you are using python. Once confirmed, it will allow you to select your version. Select Python 2.7.
-	- SSH Key - You can use an ssh key to connect to your AWS EC2 instance. This is optional and up to your discretion. If you choose yes, you must set up an ssh key. Info can be found in the link below.
+	* Region - Allows you to pick the regional endpoint for requests. Select region which applies to your location.
+	* Application Name - Choose the name of your Elastic Beantalk application.
+	* Python version - The prompt should automatically detect you are using python. Once confirmed, it will allow you to select your version. Select Python 2.7.
+	* SSH Key - You can use an ssh key to connect to your AWS EC2 instance. This is optional and up to your discretion. If you choose yes, you must set up an ssh key. Info can be found in the link below.
 
 If you run into any issues, here is a reference to the AWS Documentation:
-	[Configure the EB CLI](http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/eb-cli3-configuration.html)
-	[Getting Security Credentials](http://docs.aws.amazon.com/general/latest/gr/getting-aws-sec-creds.html)
+	- [Configure the EB CLI](http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/eb-cli3-configuration.html)
+	- [Getting Security Credentials](http://docs.aws.amazon.com/general/latest/gr/getting-aws-sec-creds.html)
 
 ### Create Application Environment
 
