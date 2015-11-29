@@ -182,10 +182,29 @@ class PostWatering(Resource):
         self.parser.add_argument('table', required=True)
         super(PostWatering, self).__init__()
 
+    def validate(self, args):
+        # Make sure the request is valid
+        # Requests are valid if the fields exist in the db and the times are valid times
+        dates_valid = validateDates ([args['start']])
+        table_valid = validateTable (args['table'])
+        duration_valid = args['duration'] >= 0
+        gal_per_min_valid = args['gal_per_min'] >= 0
+        message = ""
+        message += "" if dates_valid else "Invalid start. "
+        message += "" if table_valid else "Invalid table. "
+        message += "" if duration_valid else "Invalid duration. "
+        message += "" if gal_per_min_valid else "Invalid gal_per_min. "
+        valid = dates_valid and table_valid and duration_valid and gal_per_min_valid
+        return (valid, message)
+
     def post(self):
         args = self.parser.parse_args()
 
-        #TODO: Validation
+        # If the request is invalid, abort
+        valid = self.validate(args)
+        if not valid[0]:
+            abort(400, message=valid[1])
+
         d = args['start']
 
         if d.startswith('"') and d.endswith('"'):
@@ -311,6 +330,11 @@ def validateDates (dates):
 
 def validateKey (key):
     if key.lower() not in [x.lower() for x in config.options("fields")]:
+        return False
+    return True
+
+def validateTable (table):
+    if table.lower() not in [x.lower() for x in config.options("tables")]:
         return False
     return True
 

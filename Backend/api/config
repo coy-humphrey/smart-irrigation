@@ -12,5 +12,9 @@ s2 = INT
 s3 = INT
 temp = INT
 
+[tables]
+entry = dummy
+entry1 = dummy
+
 [weather]
 key = 165e1360651cd2e1
