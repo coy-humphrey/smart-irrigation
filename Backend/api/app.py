@@ -121,7 +121,7 @@ class GetFieldBetweenKey(Resource):
 
 # Given any number of fields, a start date and an end date, returns the average of each field
 # between the start and end date.
-# Example call: /get_average?field=temp&start=%222014-10-06_06:27:29%22&end=%222015-12-22_14:04:29%22
+# Example call: /get_average?table=entry&field=temp&start=%222014-10-06_06:27:29%22&end=%222015-12-22_14:04:29%22
 class GetAvg(Resource):
     decorators = [auth.login_required]
 
@@ -326,3 +326,5 @@ api.add_resource(PostWatering, '/post_watering')
 
 if __name__ == '__main__':
     application.run(debug=True)
+
+	

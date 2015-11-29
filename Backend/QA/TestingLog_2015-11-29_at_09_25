@@ -1,0 +1,13 @@
+<09:25:38> : Beginning Testing Process
+<09:25:38> : --------------------------------
+<09:25:38> : Setting Up Test : pullrange
+<09:25:38> : Executing Up Test : pullrange
+<09:25:38> : Performing Comparison
+<09:25:38> : Test : pullrange has  FAILED
+<09:25:38> : --------------------------------
+<09:25:38> : Setting Up Test : httpauthentication
+<09:25:38> : Executing Up Test : httpauthentication
+<09:25:38> : Performing Comparison
+<09:25:38> : Test : httpauthentication has  SUCCEEDED
+<09:25:38> : --------------------------------
+<09:25:38> : Testing Completed
