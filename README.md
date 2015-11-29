@@ -18,6 +18,25 @@ See [here](https://dev.mysql.com/doc/connector-python/en/connector-python-instal
 
 The project requires a MySQL database to function. Instructions for installing MySQL on a server can be found [here](https://dev.mysql.com/doc/refman/5.7/en/installing.html). Instructions for setting up MySQL with Amazon Web Services can be found [here](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_SettingUp.html).
 
+### Python libraries for ReadSerial
+
+The ReadSerial script depends on the MySQLdb and the py pyserial libraries. To install, run the commands
+
+    sudo apt-get install python-dev libmysqlclient-dev
+    pip install MySQL-python pyserial
+
+The first line installs dependencies for the MySQL-python library.
+
+### Python libraries for the API
+
+The API comes with a requirements.txt file listing all of its dependencies. To easily install these dependencies, run the command
+
+    pip install -r /path/to/requirements.txt
+
+Depending on your server, you may also need to install the `python-dev` and `libmysqlclient-dev` packages in order to install the MySQL-python library. The following command will do that for you on a debian system.
+
+    sudo apt-get install python-dev libmysqlclient-dev
+
 ## Running
 
 ### Creating a config file
