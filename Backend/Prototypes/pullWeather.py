@@ -4,10 +4,11 @@ import ConfigParser
 
 def get_api_key():
 	config = ConfigParser.ConfigParser()
-	parentdir= os.path.dirname(os.getcwd())
 	configdir = os.path.dirname(os.getcwd())
-	config.read(os.path.join(configdir, "config", "configAPI.ini"))
-	key = config.get('weather', 'key')
+	print(configdir)
+        config.read(os.path.join(configdir, "config", "configWeather.ini"))
+	print
+        key = config.get('weather', 'key')
 	return key
 
 def get_closest_pws(key):
@@ -27,12 +28,15 @@ def get_forecast():
 	request_url = ("http://api.wunderground.com/api/" + key +
 		"/conditions/q/pws:" + station_id + ".json")
 	station = requests.get(request_url).json()
-	results = {
+        results = {
 				'weather' : station["current_observation"]["weather"], 
-				'precipitation_metric' : station["current_observation"]["precip_today_metric"],
-				'uv' : station["current_observation"]['UV'],
+				'precipitation_inches' : station["current_observation"]["precip_today_in"],
+				'solar_radiation' : station["current_observation"]['solarradiation'],
 				'wind_mph' : station["current_observation"]["wind_mph"],
-				'pressure_in' : station["current_observation"]["pressure_in"]
+                                'wind_degrees' : station["current_observation"]["wind_degrees"],
+				'relative_humidity': station["current_observation"]["relative_humidity"],
+                                'dewpoint_f' : station["current_observation"]["dewpoint_f"],
+                                'pressure_mb' : station["current_observation"]["pressure_mb"]
 			}
 	print(results)
 	return results
