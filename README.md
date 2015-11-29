@@ -119,9 +119,9 @@ Once set up, intstall the AWS Elastic Beantalk Command Line Interface to your ma
 	
 	pip install awsebcli
 
-After the installation completes, navigate to the api folder of the project and set up your application:
+After the installation completes, navigate to the Backend folder of the project and set up your application:
 
-	cd smart-irrigation/Backend/api  
+	cd smart-irrigation/Backend  
  	eb init
 
 This will create a setup prompt with several options:
@@ -141,6 +141,7 @@ If you run into any issues, here is a reference to the AWS Documentation:
 
 Once you have setup your Elastic Beanstalk Application, the next step is to create an application environment.
 
+	cd smart-irrigation/Backend
 	eb create
 
 This will prompt you to create
