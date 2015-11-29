@@ -1,0 +1,38 @@
+<10:05:20> : Beginning Testing Process
+<10:05:20> : --------------------------------
+<10:05:20> : Setting Up Test : pullavg
+<10:05:20> : Executing Up Test : pullavg
+<10:05:21> : Performing Comparison
+<10:05:21> : Test : pullavg has  SUCCEEDED
+<10:05:21> : --------------------------------
+<10:05:21> : Setting Up Test : pullrange
+<10:05:21> : Executing Up Test : pullrange
+<10:05:21> : Performing Comparison
+<10:05:21> : Test : pullrange has  SUCCEEDED
+<10:05:21> : --------------------------------
+<10:05:21> : Setting Up Test : badrange
+<10:05:21> : Executing Up Test : badrange
+<10:05:21> : Performing Comparison
+<10:05:21> : Test : badrange has  SUCCEEDED
+<10:05:21> : --------------------------------
+<10:05:21> : Setting Up Test : pullkeys
+<10:05:21> : Executing Up Test : pullkeys
+<10:05:21> : Performing Comparison
+<10:05:21> : Test : pullkeys has  SUCCEEDED
+<10:05:21> : --------------------------------
+<10:05:21> : Setting Up Test : badkeys
+<10:05:21> : Executing Up Test : badkeys
+<10:05:21> : Performing Comparison
+<10:05:21> : Test : badkeys has  SUCCEEDED
+<10:05:21> : --------------------------------
+<10:05:21> : Setting Up Test : httpauthentication_bad
+<10:05:21> : Executing Up Test : httpauthentication_bad
+<10:05:21> : Performing Comparison
+<10:05:21> : Test : httpauthentication_bad has  SUCCEEDED
+<10:05:21> : --------------------------------
+<10:05:21> : Setting Up Test : httpauthentication_good
+<10:05:21> : Executing Up Test : httpauthentication_good
+<10:05:21> : Performing Comparison
+<10:05:21> : Test : httpauthentication_good has  SUCCEEDED
+<10:05:21> : --------------------------------
+<10:05:21> : Testing Completed

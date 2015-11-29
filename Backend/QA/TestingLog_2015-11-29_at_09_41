@@ -1,0 +1,18 @@
+<09:41:41> : Beginning Testing Process
+<09:41:41> : --------------------------------
+<09:41:41> : Setting Up Test : pullrange
+<09:41:41> : Executing Up Test : pullrange
+<09:41:41> : Performing Comparison
+<09:41:41> : Test : pullrange has  SUCCEEDED
+<09:41:41> : --------------------------------
+<09:41:41> : Setting Up Test : badrange
+<09:41:41> : Executing Up Test : badrange
+<09:41:41> : Performing Comparison
+<09:41:41> : Test : badrange has  FAILED
+<09:41:41> : --------------------------------
+<09:41:41> : Setting Up Test : httpauthentication
+<09:41:41> : Executing Up Test : httpauthentication
+<09:41:41> : Performing Comparison
+<09:41:41> : Test : httpauthentication has  SUCCEEDED
+<09:41:41> : --------------------------------
+<09:41:41> : Testing Completed

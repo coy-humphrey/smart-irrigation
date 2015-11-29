@@ -1,0 +1,1 @@
+curl -u fake:username "http://smart-irrigation.elasticbeanstalk.com/get_field?table=entry&field=s1&field=s2&start=%222014-10-06_06:27:29%22&end=%222015-12-22_14:04:29%22"
