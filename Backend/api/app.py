@@ -270,7 +270,8 @@ def performQuery (query):
             except:
                 key_type = None 
             # Apply conversion function
-            row[key] = (functs[key_type])(row[key])
+            if row[key]:
+                row[key] = (functs[key_type])(row[key])
 
     return results
 
