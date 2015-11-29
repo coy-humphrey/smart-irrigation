@@ -136,8 +136,8 @@ This will create a setup prompt with several options:
 	- SSH Key - You can use an ssh key to connect to your AWS EC2 instance. This is optional and up to your discretion. If you choose yes, you must set up an ssh key. Info can be found in the link below.
 
 If you run into any issues, here is a reference to the AWS Documentation:
-[Configure the EB CLI](http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/eb-cli3-configuration.html)
-[Getting Security Credentials](http://docs.aws.amazon.com/general/latest/gr/getting-aws-sec-creds.html)
+	[Configure the EB CLI](http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/eb-cli3-configuration.html)
+	[Getting Security Credentials](http://docs.aws.amazon.com/general/latest/gr/getting-aws-sec-creds.html)
 
 ### Create Application Environment
 
