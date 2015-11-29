@@ -1,0 +1,20 @@
+[MySQL]
+user = smart_irrigation
+password = eWGGGog8BD08KAoj
+host = smart-irrigation.canqqif3vrwd.us-west-1.rds.amazonaws.com
+database = smart_irrigation
+table = entry
+
+[fields]
+time = TIMESTAMP
+s1 = INT
+s2 = INT
+s3 = INT
+temp = INT
+
+[tables]
+entry = dummy
+entry1 = dummy
+
+[weather]
+key = 165e1360651cd2e1
