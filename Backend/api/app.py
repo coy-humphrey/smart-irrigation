@@ -12,12 +12,13 @@ application = Flask(__name__)
 auth = HTTPBasicAuth()
 api = Api(application)
 
-config = ConfigParser.RawConfigParser()
-config.read('config')
-#config = ConfigParser.ConfigParser()
-#configdir = os.path.dirname(os.path.realpath(__file__))
-#configpath = os.path.join(configdir, "config", "configAPI.ini")
-#config.read(configpath)
+#config = ConfigParser.RawConfigParser()
+#config.read('config')
+config = ConfigParser.ConfigParser()
+configdir = os.path.dirname(os.getcwd())
+configpath = os.path.join(configdir, "config", "configAPI.ini")
+print(configpath)
+config.read(configpath)
 
 # Pull settings from the MySQL section of config file
 sql_config = {
