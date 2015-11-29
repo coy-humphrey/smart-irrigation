@@ -111,7 +111,7 @@ NOTE: The current implementation assumes that the values read in will be tab sep
 
 NOTE: The current implementation uses 9600 baud for all serial connections. In the future, it would be useful to allow the baud rates to be configured for individual devices via serial_devices.ini.
 
-NOTE: The current implementation relies on the two config files being in the same directory, and may also rely on the command being executed from within that directory. Ideally, future iterations should remove this requirement.
+NOTE: The current implementation relies on the two config files being in the same directory, and may also rely on the command being executed from within that directory. Ideally, future iterations should remove these requirements.
 
 ## Using the API
 
