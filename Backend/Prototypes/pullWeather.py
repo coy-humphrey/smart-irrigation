@@ -1,14 +1,24 @@
 import requests, os
 import json
+import datetime
 import ConfigParser
+import MySQLdb
+
+config = ConfigParser.ConfigParser()
+configdir = os.path.dirname(os.path.realpath(__file__))
+configpath = os.path.join(os.path.dirname(configdir), "config", "configWeather.ini")
+config.read(configpath)
+
+# Pull settings from the MySQL section of config file
+sql_config = {
+  'user': config.get('MySQL', 'user'),
+  'passwd': config.get('MySQL', 'password'),
+  'host': config.get('MySQL', 'host'),
+  'db': config.get('MySQL', 'database'),
+}
 
 def get_api_key():
-	config = ConfigParser.ConfigParser()
-	configdir = os.path.dirname(os.getcwd())
-	print(configdir)
-        config.read(os.path.join(configdir, "config", "configWeather.ini"))
-	print
-        key = config.get('weather', 'key')
+	key = config.get('weather', 'key')
 	return key
 
 def get_closest_pws(key):
@@ -28,20 +38,37 @@ def get_forecast():
 	request_url = ("http://api.wunderground.com/api/" + key +
 		"/conditions/q/pws:" + station_id + ".json")
 	station = requests.get(request_url).json()
-        results = {
-				'weather' : station["current_observation"]["weather"], 
-				'precipitation_inches' : station["current_observation"]["precip_today_in"],
-				'solar_radiation' : station["current_observation"]['solarradiation'],
-				'wind_mph' : station["current_observation"]["wind_mph"],
-                                'wind_degrees' : station["current_observation"]["wind_degrees"],
-				'relative_humidity': station["current_observation"]["relative_humidity"],
-                                'dewpoint_f' : station["current_observation"]["dewpoint_f"],
-                                'pressure_mb' : station["current_observation"]["pressure_mb"]
-			}
-	print(results)
+
+	results = {
+	'precipitation' : float(station["current_observation"]["precip_today_in"]),
+	'solarrad' : station["current_observation"]['solarradiation'],
+	'wind_speed' : float(station["current_observation"]["wind_mph"]),
+	'winddegrees' : int(station["current_observation"]["wind_degrees"]),
+	'humidity': int(station["current_observation"]["relative_humidity"][:-1]),
+	'dewpoint_f' : int(station["current_observation"]["dewpoint_f"]),
+	'pressure' : int(station["current_observation"]["pressure_mb"]),
+	'time' : datetime.datetime.today().strftime('"%Y-%m-%d %H:%M:%S"')
+	}
+
+	if results['solarrad'] == '--':
+		results['solarrad'] = 0
+	else:
+		results['solarrad'] = int(results['solarrad'])
+
 	return results
 	
-	
+def push_forecast():
+	results = get_forecast()
+	add_entry = ("INSERT INTO weather "
+                 "(winddegrees, solarrad, precipitation, humidity, dewpoint_f, pressure, wind_speed, time) "
+                 "VALUES (%(winddegrees)s, %(solarrad)s, %(precipitation)s, %(humidity)s, %(dewpoint_f)s, %(pressure)s, %(wind_speed)s, %(time)s)") % results
 
+	conn = MySQLdb.connect(**sql_config)
+	cursor = conn.cursor()
+    # Perform query and fetch results
+	cursor.execute(add_entry)
+	conn.commit()
+	cursor.close()
+	conn.close()
 
-get_forecast()
+push_forecast()
