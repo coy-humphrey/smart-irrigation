@@ -16,7 +16,7 @@ The project requires a MySQL database to function. Instructions for installing M
 
 ### Python libraries for ReadSerial
 
-The ReadSerial script depends on the MySQLdb and the py pyserial libraries. To install, run the commands
+The ReadSerial script depends on the MySQLdb and the pyserial libraries. To install, run the following commands.
 
     sudo apt-get install python-dev libmysqlclient-dev
     pip install MySQL-python pyserial
@@ -25,7 +25,7 @@ The first line installs dependencies for the MySQL-python library.
 
 ### Python libraries for the API
 
-The API comes with a requirements.txt file listing all of its dependencies. To easily install these dependencies, run the command
+The API comes with a requirements.txt file listing all of its dependencies. To easily install these dependencies, run the following command.
 
     pip install -r /path/to/requirements.txt
 
@@ -56,6 +56,10 @@ Fill in the template with values specific to your implementation. An example con
     s2 = INT
     s3 = INT
     temp = INT
+
+    [tables]
+    entry = dummy
+    entry1 = dummy
 
     [weather]
     key = 165e1360651cd2e1

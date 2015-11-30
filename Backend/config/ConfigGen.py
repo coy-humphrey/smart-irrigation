@@ -23,6 +23,9 @@ config.add_section('fields')
 config.set('fields', 'time_field', 'TIMESTAMP')
 config.set('fields', 'integer_field', 'INT')
 
+config.add_section('tables')
+config.set('tables', 'entry', 'dummy')
+
 config.add_section('weather')
 config.set('weather','key','copy_key_here')
 
