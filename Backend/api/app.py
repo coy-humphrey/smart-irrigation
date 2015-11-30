@@ -38,7 +38,7 @@ class Welcome(Resource):
 # Start and end, the start and end dates. Results will be in the form of
 # a list of all times and fields (in a dict) that fall between the start and end date
 # Times and fields will be expressed as Strings
-# Sample call: /get_field?field=temp&start=%222014-10-06_06:27:29%22&end=%222015-12-22_14:04:29%22
+# Sample call: /get_field?field=temp&table=entry&start=%222014-10-06_06:27:29%22&end=%222015-12-22_14:04:29%22
 # Sample call (pulling multiple fields): /get_field?table=entry&field=s1&field=s2&start=%222014-10-06_06:27:29%22&end=%222015-12-22_14:04:29%22
 class GetFieldBetweenTime(Resource):
     decorators = [auth.login_required]
