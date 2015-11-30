@@ -294,3 +294,9 @@ Example call:
 This will specify a start date of 2015-10-06_06:27:29, a duration of 60 minutes, a gallons per minute rating of 10, and the resulting database entry will be linked to entries in the table named entry.
 
 No example result is given because the function is not guaranteed to return a result.
+
+## Weather
+
+### pullWeather.py
+
+This is a script that automatically uses the weather service Wunderground's API to get the current conditions. The script pulls the conditions from the station closest to the Raspberry Pi's IP address. It has a corresponding configuration file in the config folder. It provides similar info to configAPI.ini, but also has info about the weather table column types as well as the API key to make the API calls. The base tier of Wunderground API service is free and gives you an API key that you can add to the config file.
