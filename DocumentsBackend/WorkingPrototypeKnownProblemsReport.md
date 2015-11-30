@@ -6,11 +6,27 @@
 
 ## API
 
+* Incorrect values in config file will cause program to break
+
 ## Library
+
+* Some functions are not used by other files, and have not been re-tested since code change
+	* Functions guaranteed to work
+		* initConfig(), initCheck(), pushData(), connectDB(), executeCommand(), closeDB()
+	* Untested functions
+		* showTables(), selectCol(), createTable(), clearRows(), addSensorCol()
+
+* Assumes MySQL values in config file are correct and will break if they are not or if they are missing
 
 ## ReadSerial
 
-* Will break ungracefully if values in either config file are incorrect.
+* Does not check for errors in input
+	* Incorrect values in config files will cause the program to break
+	* Incorrect values read from USB devices or stdin will cause the program to break
+* USB functionality unable to be tested
+	* Our sponsor has still not gotten the hardware sensors to work, so we cannot test our code with a USB connection.
+	* Instead we have used stdin and emulated the output of the USB devices that will be used in the future.
+
 
 ## Prototypes
 
