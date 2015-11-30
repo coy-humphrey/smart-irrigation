@@ -7,6 +7,8 @@
 ## API
 
 * Incorrect values in config file will cause program to break
+* Relies on the config file being in the same directory as the program is called from
+	* If it is not, then the program will not be able to find the config file and will break
 
 ## Library
 
@@ -15,6 +17,8 @@
 		* initConfig(), initCheck(), pushData(), connectDB(), executeCommand(), closeDB()
 	* Untested functions
 		* showTables(), selectCol(), createTable(), clearRows(), addSensorCol()
+* Relies on the config file being in the same directory as the program is called from
+	* If it is not, then the program will not be able to find the config file and will break
 
 * Assumes MySQL values in config file are correct and will break if they are not or if they are missing
 
@@ -26,7 +30,8 @@
 * USB functionality unable to be tested
 	* Our sponsor has still not gotten the hardware sensors to work, so we cannot test our code with a USB connection.
 	* Instead we have used stdin and emulated the output of the USB devices that will be used in the future.
-
+* Relies on the config file being in the same directory as the program is called from
+	* If it is not, then the program will not be able to find the config file and will break
 
 ## Prototypes
 
