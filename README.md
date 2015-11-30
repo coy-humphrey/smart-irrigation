@@ -300,3 +300,5 @@ No example result is given because the function is not guaranteed to return a re
 ### pullWeather.py
 
 This is a script that automatically uses the weather service Wunderground's API to get the current conditions. The script pulls the conditions from the station closest to the Raspberry Pi's IP address. A corresponding configuration file exists in the config folder. It provides similar info to configAPI.ini, but also has info about the weather table column types as well as the API key to make the API calls. The base tier of Wunderground API service is free and gives you an API key that you can add to the config file.
+
+NOTE: This is code to approximate future function of adding a weather station to the location of the data aggregators.
