@@ -15,9 +15,9 @@ api = Api(application)
 #config = ConfigParser.RawConfigParser()
 #config.read('config')
 config = ConfigParser.ConfigParser()
-configdir = os.path.dirname(os.getcwd())
-configpath = os.path.join(configdir, "config", "configAPI.ini")
-print(configpath)
+configdir = os.path.dirname(os.path.realpath(__file__))
+configpath = os.path.join(os.path.dirname(configdir), "config", "configAPI.ini")
+print("CONFIG: " + configpath)
 config.read(configpath)
 
 # Pull settings from the MySQL section of config file
