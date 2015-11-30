@@ -15,10 +15,15 @@ api = Api(application)
 #config = ConfigParser.RawConfigParser()
 #config.read('config')
 config = ConfigParser.ConfigParser()
+configWeather = ConfigParser.ConfigParser()
 configdir = os.path.dirname(os.path.realpath(__file__))
 configpath = os.path.join(os.path.dirname(configdir), "config", "configAPI.ini")
+configpathWeather = os.path.join(os.path.dirname(configdir), "config", "configWeather.ini")
 print("CONFIG: " + configpath)
 config.read(configpath)
+configWeather.read(configpathWeather)
+
+
 
 # Pull settings from the MySQL section of config file
 sql_config = {
@@ -38,7 +43,7 @@ class Welcome(Resource):
 # Start and end, the start and end dates. Results will be in the form of
 # a list of all times and fields (in a dict) that fall between the start and end date
 # Times and fields will be expressed as Strings
-# Sample call: /get_field?field=temp&table=entry&start=%222014-10-06_06:27:29%22&end=%222015-12-22_14:04:29%22
+# Sample call: /get_field?field=temp&table=entry&start=%222014-10-06_06:27:29%22&end=%222015-12-22_15:04:29%22
 # Sample call (pulling multiple fields): /get_field?table=entry&field=s1&field=s2&start=%222014-10-06_06:27:29%22&end=%222015-12-22_14:04:29%22
 class GetFieldBetweenTime(Resource):
     decorators = [auth.login_required]
@@ -54,10 +59,12 @@ class GetFieldBetweenTime(Resource):
     def validate(self, args):
         fields_valid = validateFields (args['field'])
         dates_valid = validateDates ([args['start'], args['end']])
+        table_valid = validateTable (args['table'])
         message = ""
         message += "" if fields_valid else "Invalid fields. "
         message += "" if dates_valid else "Invalid dates."
-        return (fields_valid and dates_valid, message)
+        message += "" if table_valid else "Invalid table. "
+        return (fields_valid and dates_valid and table_valid, message)
 
     def get(self):
         # Parse arguments
@@ -97,10 +104,12 @@ class GetFieldBetweenKey(Resource):
     def validate(self, args):
         fields_valid = validateFields (args['field'])
         key_valid = validateKey (args['key'])
+        table_valid = validateTable (args['table'])
         message = ""
         message += "" if fields_valid else "Invalid fields. "
         message += "" if key_valid else "Invalid key. "
-        return (fields_valid and key_valid, message)
+        message += "" if table_valid else "Invalid table. "
+        return (fields_valid and key_valid and table_valid, message)
 
     def get(self):
         # Parse arguments
@@ -140,10 +149,12 @@ class GetAvg(Resource):
         # Requests are valid if the fields exist in the db and the times are valid times
         fields_valid = validateFields (args['field'])
         dates_valid = validateDates ([args['start'], args['end']])
+        table_valid = validateTable (args['table'])
         message = ""
         message += "" if fields_valid else "Invalid fields. "
         message += "" if dates_valid else "Invalid dates."
-        return (fields_valid and dates_valid, message)
+        message += "" if table_valid else "Invalid table. "
+        return (fields_valid and dates_valid and table_valid, message)
 
     def get(self):
         # Parse arguments
@@ -314,8 +325,14 @@ def commitQuery (query):
     conn.close()
 
 def validateFields (fields):
+    config_options = []
+
+    config_options += [x.lower() for x in config.options("fields")]
+    config_options += [x.lower() for x in configWeather.options("fields")]
+    print(config_options)
     for field in fields:
-        if field.lower() not in [x.lower() for x in config.options("fields")]:
+        print(field.lower())
+        if field.lower() not in config_options:
             return False
     return True
 
@@ -331,12 +348,23 @@ def validateDates (dates):
     return True
 
 def validateKey (key):
-    if key.lower() not in [x.lower() for x in config.options("fields")]:
+    config_options = []
+
+    config_options += [x.lower() for x in config.options("fields")]
+    config_options += [x.lower() for x in configWeather.options("fields")]
+
+    if key.lower() not in config_options:
         return False
     return True
 
 def validateTable (table):
-    if table.lower() not in [x.lower() for x in config.options("tables")]:
+    config_options = []
+
+    config_options += [x.lower() for x in config.options("tables")]
+    config_options += [x.lower() for x in configWeather.options("tables")]
+    print(config_options)
+    if table.lower() not in config_options:
+        print(table.lower())
         return False
     return True
 
