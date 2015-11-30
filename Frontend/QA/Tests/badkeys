@@ -1,0 +1,1 @@
+curl -u bob:secret "http://smart-irrigation.elasticbeanstalk.com/get_field_between_key?field=s1&field=s2&start=80&end=120&table=entry&key=meow"
