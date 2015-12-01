@@ -7,8 +7,6 @@
 ## API
 
 * Incorrect values in config file will cause program to break
-* Relies on the config file being in the same directory as the program is called from
-	* If it is not, then the program will not be able to find the config file and will break
 
 ## Library
 

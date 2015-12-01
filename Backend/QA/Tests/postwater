@@ -1,0 +1,2 @@
+curl --data "start="2015-12-25_06:27:29"&duration=1000&table=entry&gal_per_min=115" -u bob:secret smart-irrigation.elasticbeanstalk.com/post_watering
+mysql --user=smart_irrigation --password=eWGGGog8BD08KAoj --host=smart-irrigation.canqqif3vrwd.us-west-1.rds.amazonaws.com --database=smart_irrigation --column-names=FALSE < postwater.sql

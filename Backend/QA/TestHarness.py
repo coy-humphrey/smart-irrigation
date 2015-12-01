@@ -62,7 +62,7 @@ class Test :
 		try :
 			#ensure platform independence
 			testFile = open( os.path.normpath("Tests/" + self.name) )
-			self.cmds = testFile.readlines()
+			self.cmds = [line.rstrip() for line in testFile.readlines()]
 		except IOError as error:
 			self.reportFailure(error, "staging")
 			return
@@ -72,8 +72,7 @@ class Test :
 		while self.cmds and self.hasFailed is False:
 			print self.cmds
 			try :
-				testResults = subprocess.check_output(self.cmds.pop(0), shell=True)
-				
+				testResults = subprocess.check_output(self.cmds.pop(0), shell=True)	
 				#kept separate to ensure stream closure in exception, although I'm sure python probably does this.
 				file = open('TestResult', "w")
 				file.write(testResults)

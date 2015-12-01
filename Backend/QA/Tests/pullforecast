@@ -1,0 +1,1 @@
+curl -u bob:secret "http://smart-irrigation.elasticbeanstalk.com/recent_forecast?table=weather"
