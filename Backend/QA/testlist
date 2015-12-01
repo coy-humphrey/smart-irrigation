@@ -2,6 +2,7 @@ pullavg
 pullrange
 badrange
 pullkeys
+pullforecast
 badkeys
 httpauthentication_bad
 httpauthentication_good
