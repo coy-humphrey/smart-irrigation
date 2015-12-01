@@ -122,11 +122,11 @@
                             Some summary content here
                             <br>
                             <br>
-                            <a class="button" href="#popup1">Moisture Readings</a>
+                            <a class="button" href="#popup1">Soil Moisture Readings</a>
                             <br>
                             <br>
                             <br>
-                            <a class="button" href="#popup2">Soil Temp Readings</a>
+                            <a class="button" href="#popup2">Soil Temperature Readings</a>
                         </div>
                     </div>
                 </div>
@@ -211,7 +211,7 @@
                 </script>
                 <div class="weather-wrapper">
                     <div class="weather-forecast">
-                        <!--Thanks to http://blog.forecast.io/forecast-embeds/ -->
+                        <!--Thanks to https://blog.forecast.io/forecast-embeds/ -->
                         <iframe id="forecast_embed" type="text/html" frameborder="0" height="245" width="495px"
                                 src="http://forecast.io/embed/#lat=36.954871&lon=-122.048429&name=Natural Bridges High"> </iframe>
                     </div>
