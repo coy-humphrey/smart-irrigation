@@ -129,6 +129,8 @@ class GetFieldBetweenKey(Resource):
 
         return result
 
+#Gets the most recent weather conditions
+#Table: name of weather table linked to user
 class GetRecentForecast(Resource):
 
     def __init__(self):
