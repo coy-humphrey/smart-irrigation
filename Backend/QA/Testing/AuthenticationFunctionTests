@@ -1,0 +1,15 @@
+API Functional Authentication
+
+Arguments :
+Username, Password
+
+Equivilance Classes :
+
+Class Valid = {(bob, secret)}
+Class Invalid = { x, y : such that x != bob || y != secret}
+
+
+Tests Picked from classes
+Test for class Valid : Logging in with Bob:Secret encapsulated in httpauthentication_good.
+Test for class Invalid : Logging in with bob:meow encapsulated in httpauthentication_bad
+
