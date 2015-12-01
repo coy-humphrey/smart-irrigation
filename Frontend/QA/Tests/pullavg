@@ -1,1 +1,0 @@
-curl -u bob:secret "http://smart-irrigation.elasticbeanstalk.com/get_average?table=entry&field=temp&start=%222014-10-06_06:27:29%22&end=%222015-12-22_14:04:29%22"

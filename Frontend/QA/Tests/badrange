@@ -1,1 +1,0 @@
-curl -u bob:secret "http://smart-irrigation.elasticbeanstalk.com/get_field?table=entry&field=s1&field=s2&start=%221988-10-06_06:27:29%22&end="""
