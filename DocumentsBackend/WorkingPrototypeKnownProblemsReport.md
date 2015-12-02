@@ -7,6 +7,7 @@
 ## API
 
 * Incorrect values in config file will cause program to break
+* Possible to (attempt to) pull fields from tables where the fields do not exist
 
 ## Library
 
