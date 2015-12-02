@@ -39,10 +39,19 @@ class IndexController {
         // Calculate dates needed for DB lookup (1 year maximum)
         // Use format for start and end %Y-%m-%d_%H:%M:%S
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss")
+
+        // Calendar is created to format the dates for the chart. Currently they are hardcoded, but can be
+        // changed by changing the following variables
+
+
+
         Calendar cal = Calendar.getInstance()
-        cal.add(Calendar.MONTH, 2)
+        int granularity = Calendar.MONTH;
+        int range = 2;
+
+        cal.add(granularity, range)
         def end = dateFormat.format(cal.getTime())
-        cal.add(Calendar.MONTH, -2)
+        cal.add(granularity, -range)
         def start = dateFormat.format(cal.getTime())
 
 

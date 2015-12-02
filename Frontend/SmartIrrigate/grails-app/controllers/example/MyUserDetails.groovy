@@ -20,4 +20,8 @@ public class MyUserDetails extends GrailsUser {
 
         this.dbTable = dbTable
     }
+
+    public String toString(){
+        return super.toString() + " dbTable:" + this.dbTable
+    }
 }

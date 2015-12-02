@@ -122,11 +122,11 @@
                             Some summary content here
                             <br>
                             <br>
-                            <a class="button" href="#popup1">Soil Moisture Readings</a>
+                            <a class="button" href="#popup1">Moisture Readings</a>
                             <br>
                             <br>
                             <br>
-                            <a class="button" href="#popup2">Soil Temperature Readings</a>
+                            <a class="button" href="#popup2">Soil Temp Readings</a>
                         </div>
                     </div>
                 </div>
@@ -153,65 +153,66 @@
                     def s1 = [];
                     def s2 = [];
                     def s3 = [];
-                    for(int i = 0; i < x.length(); i++){
-                    StringTokenizer s = new StringTokenizer(x[i].getAt("time").toString(), '-')
-                        year[i] = s.nextToken()
-                        month[i] = s.nextToken()
-                        day[i] = s.nextToken().substring(0,2)
+                        for(int i = 0; i < x?.length(); i++){
+                        StringTokenizer s = new StringTokenizer(x[i].getAt("time").toString(), '-')
+                            year[i] = s.nextToken()
+                            month[i] = s.nextToken()
+                            day[i] = s.nextToken().substring(0,2)
 
-                        temp[i] = x[i].getAt("temp")
-                        s1[i] = x[i].getAt("s1")
-                        s2[i] = x[i].getAt("s2")
-                        s3[i] = x[i].getAt("s3")
-                    } %>
+                            temp[i] = x[i].getAt("temp")
+                            s1[i] = x[i].getAt("s1")
+                            s2[i] = x[i].getAt("s2")
+                            s3[i] = x[i].getAt("s3")
+                        }
+                    %>
 
                         // Google Charts API (chart constructor)
 
-                        var waterTimeTable = [];
-                        var tempTimeTable = [];
-                        var day = ${day};
-                        var month = ${month};
-                        var year = ${year};
+                            var waterTimeTable = [];
+                            var tempTimeTable = [];
+                            var day = ${day};
+                            var month = ${month};
+                            var year = ${year};
 
-                        var temp = ${temp};
-                        var s1 = ${s1};
-                        var s2 = ${s2};
-                        var s3 = ${s3};
+                            var temp = ${temp};
+                            var s1 = ${s1};
+                            var s2 = ${s2};
+                            var s3 = ${s3};
 
-                        // Construct Water Time Table
-                        waterTimeTable[0] = ['Year', 'S1', 'S2', 'S3'];
-                        for(var i = 1; i < ${x.length()}; i++){
-                            waterTimeTable[i] = ["" + year[i] + "-" + month[i] + "-" + day[i], s1[i], s2[i], s3[i]];
-                        }
+                            // Construct Water Time Table
+                            waterTimeTable[0] = ['Year', 'S1', 'S2', 'S3'];
+                            for (var i = 1; i < ${x?.length()}; i++) {
+                                waterTimeTable[i] = ["" + year[i] + "-" + month[i] + "-" + day[i], s1[i], s2[i], s3[i]];
+                            }
 
-                        // Construct Temperature Time Table
-                        tempTimeTable[0] = ['Year', 'Temperature'];
-                        for(var i = 1; i < ${x.length()}; i++){
-                            tempTimeTable[i] = ["" + year[i] + "-" + month[i] + "-" + day[i], temp[i]];
-                        }
+                            // Construct Temperature Time Table
+                            tempTimeTable[0] = ['Year', 'Temperature'];
+                            for (var i = 1; i < ${x?.length()}; i++) {
+                                tempTimeTable[i] = ["" + year[i] + "-" + month[i] + "-" + day[i], temp[i]];
+                            }
 
-                        // Draw Water Usage vs. Time table
-                        var data = google.visualization.arrayToDataTable(waterTimeTable);
-                        var options = {
-                            title: 'Moisture information',
-                            legend: { position: 'bottom' }
-                        };
-                        var chart = new google.visualization.LineChart(document.getElementById('waterTime_chart'));
-                        chart.draw(data, options);
+                            // Draw Water Usage vs. Time table
+                            var data = google.visualization.arrayToDataTable(waterTimeTable);
+                            var options = {
+                                title: 'Moisture information',
+                                legend: {position: 'bottom'}
+                            };
+                            var chart = new google.visualization.LineChart(document.getElementById('waterTime_chart'));
+                            chart.draw(data, options);
 
-                        // Draw Temperature Usage vs. Time table
-                        var data = google.visualization.arrayToDataTable(tempTimeTable);
-                        var options = {
-                            title: 'Temperature information',
-                            legend: { position: 'bottom' }
-                        };
-                        var chart = new google.visualization.LineChart(document.getElementById('tempTime_chart'));
-                        chart.draw(data, options);
+                            // Draw Temperature Usage vs. Time table
+                            var data = google.visualization.arrayToDataTable(tempTimeTable);
+                            var options = {
+                                title: 'Temperature information',
+                                legend: {position: 'bottom'}
+                            };
+                            var chart = new google.visualization.LineChart(document.getElementById('tempTime_chart'));
+                            chart.draw(data, options);
                     }
                 </script>
                 <div class="weather-wrapper">
                     <div class="weather-forecast">
-                        <!--Thanks to https://blog.forecast.io/forecast-embeds/ -->
+                        <!--Thanks to http://blog.forecast.io/forecast-embeds/ -->
                         <iframe id="forecast_embed" type="text/html" frameborder="0" height="245" width="495px"
                                 src="http://forecast.io/embed/#lat=36.954871&lon=-122.048429&name=Natural Bridges High"> </iframe>
                     </div>

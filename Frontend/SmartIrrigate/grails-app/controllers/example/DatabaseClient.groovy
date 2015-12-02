@@ -30,7 +30,6 @@ class DatabaseClient {
         def request = "/get_field?" + field + "&start=%22" + date1 + "%22&end=%22" + date2 + "%22&table="+ dbTable
 
         GetData(request);
-        //http://whatevertheaddressis/get_field?field=s1&field=s2&start=%222014-10-06_06:27:29%22&end=%222015-12-22_14:04:29%22&table=entry
     }
 
     // Accepts request as argument.
